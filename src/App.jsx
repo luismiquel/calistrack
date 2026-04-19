@@ -1,36 +1,445 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "calistrack_v2";
+const STORAGE_KEY = "calistrack_v4";
+
+const TRAINING_MODES = ["calistenia", "militar", "mixto"];
 
 const EXERCISES = [
-  { id: 1, name: "Flexiones inclinadas", level: "basico", category: "empuje", muscle: "Pecho / Triceps", sets: 3, reps: "12", rest: "60 s", description: "Perfectas para empezar con buena tecnica.", howTo: ["Apoya las manos en una superficie elevada.", "Mantén el cuerpo recto de hombros a tobillos.", "Baja el pecho controlando el movimiento.", "Empuja hasta volver arriba sin arquear la espalda."] },
-  { id: 2, name: "Flexiones clasicas", level: "basico", category: "empuje", muscle: "Pecho / Hombro / Triceps", sets: 4, reps: "10", rest: "75 s", description: "Base de fuerza del tren superior.", howTo: ["Coloca las manos un poco más abiertas que los hombros.", "Aprieta abdomen y glúteos para mantener el cuerpo recto.", "Desciende hasta que el pecho se acerque al suelo.", "Empuja fuerte hasta extender los brazos."] },
-  { id: 3, name: "Remo australiano", level: "basico", category: "tiron", muscle: "Espalda / Biceps", sets: 4, reps: "8", rest: "75 s", description: "Progresion ideal antes de dominadas estrictas.", howTo: ["Agarra la barra con el cuerpo por debajo.", "Mantén talones apoyados y cuerpo en línea recta.", "Tira del pecho hacia la barra juntando escápulas.", "Baja de forma lenta y controlada."] },
-  { id: 4, name: "Dominadas asistidas", level: "basico", category: "tiron", muscle: "Espalda / Biceps", sets: 4, reps: "6", rest: "90 s", description: "Trabajo vertical de tiron para principiantes.", howTo: ["Usa banda o apoyo para reducir carga.", "Agarra la barra con firmeza y activa hombros.", "Sube llevando el pecho hacia la barra.", "Desciende despacio hasta extensión casi completa."] },
-  { id: 5, name: "Sentadillas al aire", level: "basico", category: "pierna", muscle: "Cuadriceps / Gluteos", sets: 4, reps: "15", rest: "60 s", description: "Ejercicio esencial de tren inferior.", howTo: ["Coloca los pies al ancho de hombros.", "Empuja la cadera hacia atrás al bajar.", "Mantén el pecho arriba y talones en el suelo.", "Sube extendiendo rodillas y cadera."] },
-  { id: 6, name: "Plancha frontal", level: "basico", category: "core", muscle: "Abdomen / Lumbar", sets: 3, reps: "30 s", rest: "45 s", description: "Estabilidad basica del core.", howTo: ["Apoya antebrazos y puntas de los pies.", "Mantén hombros alineados con codos.", "Aprieta abdomen y glúteos.", "Evita hundir o elevar demasiado la cadera."] },
-
-  { id: 7, name: "Fondos en banco", level: "medio", category: "empuje", muscle: "Triceps / Pecho", sets: 4, reps: "10", rest: "75 s", description: "Paso intermedio hacia fondos en paralelas.", howTo: ["Apoya las manos en el borde del banco.", "Extiende las piernas hacia delante.", "Baja flexionando codos cerca del cuerpo.", "Empuja hasta volver a la posición inicial."] },
-  { id: 8, name: "Fondos en paralelas", level: "medio", category: "empuje", muscle: "Pecho / Hombro / Triceps", sets: 4, reps: "8", rest: "90 s", description: "Gran ejercicio de empuje en calistenia.", howTo: ["Sujeta las paralelas con brazos extendidos.", "Inclina ligeramente el torso hacia delante.", "Baja hasta sentir buen rango sin perder control.", "Empuja fuerte hasta bloqueo estable."] },
-  { id: 9, name: "Dominadas estrictas", level: "medio", category: "tiron", muscle: "Espalda / Biceps", sets: 5, reps: "5", rest: "120 s", description: "Fuerza real del tren superior.", howTo: ["Cuelga con agarre firme y hombros activos.", "Inicia el tirón desde la espalda, no solo con brazos.", "Lleva el pecho hacia la barra.", "Baja controlando sin balancearte."] },
-  { id: 10, name: "Elevaciones de rodillas", level: "medio", category: "core", muscle: "Abdomen / Cadera", sets: 4, reps: "12", rest: "60 s", description: "Paso previo para L-sit.", howTo: ["Cuelga de una barra o apóyate en paralelas.", "Sube las rodillas hacia el pecho.", "Evita impulsarte con balanceo.", "Baja despacio manteniendo el abdomen activo."] },
-  { id: 11, name: "Zancadas alternas", level: "medio", category: "pierna", muscle: "Pierna unilateral", sets: 4, reps: "12 por lado", rest: "60 s", description: "Control y estabilidad de pierna.", howTo: ["Da un paso largo hacia delante.", "Baja ambas rodillas controladamente.", "Mantén torso erguido y abdomen firme.", "Empuja con la pierna delantera para volver."] },
-  { id: 12, name: "L-sit tuck", level: "medio", category: "core", muscle: "Abdomen / Flexores de cadera", sets: 5, reps: "15 s", rest: "60 s", description: "Progresion intermedia de compresion.", howTo: ["Apóyate en paralelas o bloques.", "Eleva el cuerpo con hombros deprimidos.", "Lleva rodillas al pecho manteniendo pies fuera del suelo.", "Sostén sin redondear demasiado la espalda."] },
-
-  { id: 13, name: "Flexiones declinadas", level: "experto", category: "empuje", muscle: "Pecho superior / Hombro", sets: 5, reps: "12", rest: "90 s", description: "Mayor intensidad de empuje horizontal.", howTo: ["Apoya los pies en una superficie elevada.", "Coloca las manos firmes en el suelo.", "Baja controlando el pecho hacia el suelo.", "Empuja sin perder alineación corporal."] },
-  { id: 14, name: "Pike push-ups", level: "experto", category: "empuje", muscle: "Hombro / Triceps", sets: 5, reps: "8", rest: "90 s", description: "Excelente base para handstand push-up.", howTo: ["Coloca cadera alta formando una V invertida.", "Baja la cabeza entre las manos.", "Mantén codos orientados hacia atrás.", "Empuja hacia arriba llevando carga a hombros."] },
-  { id: 15, name: "Pistol squat asistida", level: "experto", category: "pierna", muscle: "Pierna unilateral / Gluteos", sets: 4, reps: "6 por lado", rest: "90 s", description: "Fuerza, equilibrio y movilidad.", howTo: ["Sujétate a un apoyo ligero.", "Extiende una pierna al frente.", "Baja sobre la pierna de apoyo sin perder equilibrio.", "Sube empujando fuerte con el pie apoyado."] },
-  { id: 16, name: "L-sit completo", level: "experto", category: "core", muscle: "Abdomen / Compresion", sets: 5, reps: "20 s", rest: "75 s", description: "Trabajo isometrico avanzado.", howTo: ["Empuja fuerte contra las paralelas.", "Eleva ambas piernas rectas al frente.", "Mantén rodillas extendidas y abdomen firme.", "Sostén sin dejar caer la cadera."] },
-  { id: 17, name: "Dominadas explosivas", level: "experto", category: "tiron", muscle: "Espalda / Potencia", sets: 5, reps: "4", rest: "120 s", description: "Muy utiles para progresion a muscle-up.", howTo: ["Inicia desde colgado estable.", "Tira con máxima velocidad y potencia.", "Busca que el pecho suba lo más alto posible.", "Baja con control para repetir limpio."] },
-  { id: 18, name: "Dragon flag progresion", level: "experto", category: "core", muscle: "Core completo", sets: 4, reps: "5", rest: "90 s", description: "Trabajo avanzado de anti-extension.", howTo: ["Apoya hombros en banco y sujeta un punto firme.", "Eleva el cuerpo en bloque.", "Desciende lentamente sin doblarte por la cadera.", "Vuelve arriba manteniendo tensión abdominal."] },
-
-  { id: 19, name: "Burpees", level: "medio", category: "fullbody", muscle: "Cuerpo completo", sets: 4, reps: "15", rest: "60 s", description: "Ejercicio militar clasico de resistencia y potencia.", howTo: ["Desde pie, baja las manos al suelo.", "Lleva los pies atrás a posición de plancha.", "Vuelve con los pies hacia delante.", "Salta extendiendo el cuerpo arriba."] },
-  { id: 20, name: "Flexiones diamante", level: "medio", category: "empuje", muscle: "Triceps", sets: 4, reps: "12", rest: "60 s", description: "Muy usadas en entrenamiento militar para fuerza de triceps.", howTo: ["Junta las manos formando un diamante.", "Mantén codos cerca del cuerpo.", "Baja controlando el pecho hacia las manos.", "Empuja fuerte hasta extensión completa."] },
-  { id: 21, name: "Sprint en sitio", level: "basico", category: "cardio", muscle: "Pierna / Resistencia", sets: 5, reps: "30 s", rest: "30 s", description: "Trabajo cardiovascular tipo militar.", howTo: ["Corre en el mismo sitio a máxima intensidad.", "Eleva rodillas de forma activa.", "Mueve brazos con ritmo rápido.", "Mantén el tronco estable y respiración viva."] },
-  { id: 22, name: "Mountain climbers", level: "medio", category: "core", muscle: "Core / Cardio", sets: 4, reps: "40 s", rest: "30 s", description: "Alta intensidad usada en entrenamiento funcional militar.", howTo: ["Colócate en plancha alta.", "Lleva una rodilla al pecho y alterna rápido.", "Mantén hombros sobre las manos.", "Evita mover demasiado la cadera."] },
-  { id: 23, name: "Salto con rodillas al pecho", level: "experto", category: "pierna", muscle: "Explosividad", sets: 4, reps: "12", rest: "60 s", description: "Trabajo explosivo tipo entrenamiento de combate.", howTo: ["Parte de pie con rodillas ligeramente flexionadas.", "Salta lo más vertical posible.", "Lleva rodillas hacia el pecho en el aire.", "Aterriza suave y repite con control."] },
-  { id: 24, name: "Plancha con desplazamiento", level: "experto", category: "core", muscle: "Core completo", sets: 4, reps: "30 s", rest: "45 s", description: "Simula desplazamientos militares en el suelo.", howTo: ["Adopta posición de plancha baja.", "Desplázate lateral o frontal manteniendo tensión.", "Mantén abdomen fuerte y cadera estable.", "Respira sin perder la postura."] },
+  {
+    id: 1,
+    name: "Flexiones inclinadas",
+    level: "basico",
+    category: "empuje",
+    muscle: "Pecho / Triceps",
+    sets: 3,
+    reps: "12",
+    rest: "60 s",
+    mode: "calistenia",
+    description: "Perfectas para empezar con buena tecnica.",
+    howTo: [
+      "Apoya las manos en una superficie elevada.",
+      "Mantén el cuerpo recto de hombros a tobillos.",
+      "Baja el pecho controlando el movimiento.",
+      "Empuja hasta volver arriba sin arquear la espalda.",
+    ],
+  },
+  {
+    id: 2,
+    name: "Flexiones clasicas",
+    level: "basico",
+    category: "empuje",
+    muscle: "Pecho / Hombro / Triceps",
+    sets: 4,
+    reps: "10",
+    rest: "75 s",
+    mode: "calistenia",
+    description: "Base de fuerza del tren superior.",
+    howTo: [
+      "Coloca las manos un poco más abiertas que los hombros.",
+      "Aprieta abdomen y gluteos para mantener el cuerpo recto.",
+      "Desciende hasta que el pecho se acerque al suelo.",
+      "Empuja fuerte hasta extender los brazos.",
+    ],
+  },
+  {
+    id: 3,
+    name: "Remo australiano",
+    level: "basico",
+    category: "tiron",
+    muscle: "Espalda / Biceps",
+    sets: 4,
+    reps: "8",
+    rest: "75 s",
+    mode: "calistenia",
+    description: "Progresion ideal antes de dominadas estrictas.",
+    howTo: [
+      "Agarra la barra con el cuerpo por debajo.",
+      "Mantén talones apoyados y cuerpo en linea recta.",
+      "Tira del pecho hacia la barra juntando escapulas.",
+      "Baja de forma lenta y controlada.",
+    ],
+  },
+  {
+    id: 4,
+    name: "Dominadas asistidas",
+    level: "basico",
+    category: "tiron",
+    muscle: "Espalda / Biceps",
+    sets: 4,
+    reps: "6",
+    rest: "90 s",
+    mode: "calistenia",
+    description: "Trabajo vertical de tiron para principiantes.",
+    howTo: [
+      "Usa banda o apoyo para reducir carga.",
+      "Agarra la barra con firmeza y activa hombros.",
+      "Sube llevando el pecho hacia la barra.",
+      "Desciende despacio hasta extension casi completa.",
+    ],
+  },
+  {
+    id: 5,
+    name: "Sentadillas al aire",
+    level: "basico",
+    category: "pierna",
+    muscle: "Cuadriceps / Gluteos",
+    sets: 4,
+    reps: "15",
+    rest: "60 s",
+    mode: "calistenia",
+    description: "Ejercicio esencial de tren inferior.",
+    howTo: [
+      "Coloca los pies al ancho de hombros.",
+      "Empuja la cadera hacia atras al bajar.",
+      "Mantén el pecho arriba y talones en el suelo.",
+      "Sube extendiendo rodillas y cadera.",
+    ],
+  },
+  {
+    id: 6,
+    name: "Plancha frontal",
+    level: "basico",
+    category: "core",
+    muscle: "Abdomen / Lumbar",
+    sets: 3,
+    reps: "30 s",
+    rest: "45 s",
+    mode: "calistenia",
+    description: "Estabilidad basica del core.",
+    howTo: [
+      "Apoya antebrazos y puntas de los pies.",
+      "Mantén hombros alineados con codos.",
+      "Aprieta abdomen y gluteos.",
+      "Evita hundir o elevar demasiado la cadera.",
+    ],
+  },
+  {
+    id: 7,
+    name: "Fondos en banco",
+    level: "medio",
+    category: "empuje",
+    muscle: "Triceps / Pecho",
+    sets: 4,
+    reps: "10",
+    rest: "75 s",
+    mode: "calistenia",
+    description: "Paso intermedio hacia fondos en paralelas.",
+    howTo: [
+      "Apoya las manos en el borde del banco.",
+      "Extiende las piernas hacia delante.",
+      "Baja flexionando codos cerca del cuerpo.",
+      "Empuja hasta volver a la posicion inicial.",
+    ],
+  },
+  {
+    id: 8,
+    name: "Fondos en paralelas",
+    level: "medio",
+    category: "empuje",
+    muscle: "Pecho / Hombro / Triceps",
+    sets: 4,
+    reps: "8",
+    rest: "90 s",
+    mode: "calistenia",
+    description: "Gran ejercicio de empuje en calistenia.",
+    howTo: [
+      "Sujeta las paralelas con brazos extendidos.",
+      "Inclina ligeramente el torso hacia delante.",
+      "Baja hasta sentir buen rango sin perder control.",
+      "Empuja fuerte hasta bloqueo estable.",
+    ],
+  },
+  {
+    id: 9,
+    name: "Dominadas estrictas",
+    level: "medio",
+    category: "tiron",
+    muscle: "Espalda / Biceps",
+    sets: 5,
+    reps: "5",
+    rest: "120 s",
+    mode: "calistenia",
+    description: "Fuerza real del tren superior.",
+    howTo: [
+      "Cuelga con agarre firme y hombros activos.",
+      "Inicia el tiron desde la espalda, no solo con brazos.",
+      "Lleva el pecho hacia la barra.",
+      "Baja controlando sin balancearte.",
+    ],
+  },
+  {
+    id: 10,
+    name: "Elevaciones de rodillas",
+    level: "medio",
+    category: "core",
+    muscle: "Abdomen / Cadera",
+    sets: 4,
+    reps: "12",
+    rest: "60 s",
+    mode: "calistenia",
+    description: "Paso previo para L-sit.",
+    howTo: [
+      "Cuelga de una barra o apoyate en paralelas.",
+      "Sube las rodillas hacia el pecho.",
+      "Evita impulsarte con balanceo.",
+      "Baja despacio manteniendo el abdomen activo.",
+    ],
+  },
+  {
+    id: 11,
+    name: "Zancadas alternas",
+    level: "medio",
+    category: "pierna",
+    muscle: "Pierna unilateral",
+    sets: 4,
+    reps: "12 por lado",
+    rest: "60 s",
+    mode: "calistenia",
+    description: "Control y estabilidad de pierna.",
+    howTo: [
+      "Da un paso largo hacia delante.",
+      "Baja ambas rodillas controladamente.",
+      "Mantén torso erguido y abdomen firme.",
+      "Empuja con la pierna delantera para volver.",
+    ],
+  },
+  {
+    id: 12,
+    name: "L-sit tuck",
+    level: "medio",
+    category: "core",
+    muscle: "Abdomen / Flexores de cadera",
+    sets: 5,
+    reps: "15 s",
+    rest: "60 s",
+    mode: "calistenia",
+    description: "Progresion intermedia de compresion.",
+    howTo: [
+      "Apoyate en paralelas o bloques.",
+      "Eleva el cuerpo con hombros deprimidos.",
+      "Lleva rodillas al pecho manteniendo pies fuera del suelo.",
+      "Sostén sin redondear demasiado la espalda.",
+    ],
+  },
+  {
+    id: 13,
+    name: "Flexiones declinadas",
+    level: "experto",
+    category: "empuje",
+    muscle: "Pecho superior / Hombro",
+    sets: 5,
+    reps: "12",
+    rest: "90 s",
+    mode: "calistenia",
+    description: "Mayor intensidad de empuje horizontal.",
+    howTo: [
+      "Apoya los pies en una superficie elevada.",
+      "Coloca las manos firmes en el suelo.",
+      "Baja controlando el pecho hacia el suelo.",
+      "Empuja sin perder alineacion corporal.",
+    ],
+  },
+  {
+    id: 14,
+    name: "Pike push-ups",
+    level: "experto",
+    category: "empuje",
+    muscle: "Hombro / Triceps",
+    sets: 5,
+    reps: "8",
+    rest: "90 s",
+    mode: "calistenia",
+    description: "Excelente base para handstand push-up.",
+    howTo: [
+      "Coloca cadera alta formando una V invertida.",
+      "Baja la cabeza entre las manos.",
+      "Mantén codos orientados hacia atras.",
+      "Empuja hacia arriba llevando carga a hombros.",
+    ],
+  },
+  {
+    id: 15,
+    name: "Pistol squat asistida",
+    level: "experto",
+    category: "pierna",
+    muscle: "Pierna unilateral / Gluteos",
+    sets: 4,
+    reps: "6 por lado",
+    rest: "90 s",
+    mode: "calistenia",
+    description: "Fuerza, equilibrio y movilidad.",
+    howTo: [
+      "Sujetate a un apoyo ligero.",
+      "Extiende una pierna al frente.",
+      "Baja sobre la pierna de apoyo sin perder equilibrio.",
+      "Sube empujando fuerte con el pie apoyado.",
+    ],
+  },
+  {
+    id: 16,
+    name: "L-sit completo",
+    level: "experto",
+    category: "core",
+    muscle: "Abdomen / Compresion",
+    sets: 5,
+    reps: "20 s",
+    rest: "75 s",
+    mode: "calistenia",
+    description: "Trabajo isometrico avanzado.",
+    howTo: [
+      "Empuja fuerte contra las paralelas.",
+      "Eleva ambas piernas rectas al frente.",
+      "Mantén rodillas extendidas y abdomen firme.",
+      "Sostén sin dejar caer la cadera.",
+    ],
+  },
+  {
+    id: 17,
+    name: "Dominadas explosivas",
+    level: "experto",
+    category: "tiron",
+    muscle: "Espalda / Potencia",
+    sets: 5,
+    reps: "4",
+    rest: "120 s",
+    mode: "calistenia",
+    description: "Muy utiles para progresion a muscle-up.",
+    howTo: [
+      "Inicia desde colgado estable.",
+      "Tira con maxima velocidad y potencia.",
+      "Busca que el pecho suba lo más alto posible.",
+      "Baja con control para repetir limpio.",
+    ],
+  },
+  {
+    id: 18,
+    name: "Dragon flag progresion",
+    level: "experto",
+    category: "core",
+    muscle: "Core completo",
+    sets: 4,
+    reps: "5",
+    rest: "90 s",
+    mode: "calistenia",
+    description: "Trabajo avanzado de anti-extension.",
+    howTo: [
+      "Apoya hombros en banco y sujeta un punto firme.",
+      "Eleva el cuerpo en bloque.",
+      "Desciende lentamente sin doblarte por la cadera.",
+      "Vuelve arriba manteniendo tension abdominal.",
+    ],
+  },
+  {
+    id: 19,
+    name: "Burpees",
+    level: "medio",
+    category: "fullbody",
+    muscle: "Cuerpo completo",
+    sets: 4,
+    reps: "15",
+    rest: "60 s",
+    mode: "militar",
+    description: "Ejercicio militar clasico de resistencia y potencia.",
+    howTo: [
+      "Desde pie, baja las manos al suelo.",
+      "Lleva los pies atras a posicion de plancha.",
+      "Vuelve con los pies hacia delante.",
+      "Salta extendiendo el cuerpo arriba.",
+    ],
+  },
+  {
+    id: 20,
+    name: "Flexiones diamante",
+    level: "medio",
+    category: "empuje",
+    muscle: "Triceps",
+    sets: 4,
+    reps: "12",
+    rest: "60 s",
+    mode: "militar",
+    description: "Muy usadas en entrenamiento militar para fuerza de triceps.",
+    howTo: [
+      "Junta las manos formando un diamante.",
+      "Mantén codos cerca del cuerpo.",
+      "Baja controlando el pecho hacia las manos.",
+      "Empuja fuerte hasta extension completa.",
+    ],
+  },
+  {
+    id: 21,
+    name: "Sprint en sitio",
+    level: "basico",
+    category: "cardio",
+    muscle: "Pierna / Resistencia",
+    sets: 5,
+    reps: "30 s",
+    rest: "30 s",
+    mode: "militar",
+    description: "Trabajo cardiovascular tipo militar.",
+    howTo: [
+      "Corre en el mismo sitio a maxima intensidad.",
+      "Eleva rodillas de forma activa.",
+      "Mueve brazos con ritmo rapido.",
+      "Mantén el tronco estable y respiracion viva.",
+    ],
+  },
+  {
+    id: 22,
+    name: "Mountain climbers",
+    level: "medio",
+    category: "core",
+    muscle: "Core / Cardio",
+    sets: 4,
+    reps: "40 s",
+    rest: "30 s",
+    mode: "militar",
+    description: "Alta intensidad usada en entrenamiento funcional militar.",
+    howTo: [
+      "Colocate en plancha alta.",
+      "Lleva una rodilla al pecho y alterna rapido.",
+      "Mantén hombros sobre las manos.",
+      "Evita mover demasiado la cadera.",
+    ],
+  },
+  {
+    id: 23,
+    name: "Salto con rodillas al pecho",
+    level: "experto",
+    category: "pierna",
+    muscle: "Explosividad",
+    sets: 4,
+    reps: "12",
+    rest: "60 s",
+    mode: "militar",
+    description: "Trabajo explosivo tipo entrenamiento de combate.",
+    howTo: [
+      "Parte de pie con rodillas ligeramente flexionadas.",
+      "Salta lo más vertical posible.",
+      "Lleva rodillas hacia el pecho en el aire.",
+      "Aterriza suave y repite con control.",
+    ],
+  },
+  {
+    id: 24,
+    name: "Plancha con desplazamiento",
+    level: "experto",
+    category: "core",
+    muscle: "Core completo",
+    sets: 4,
+    reps: "30 s",
+    rest: "45 s",
+    mode: "militar",
+    description: "Simula desplazamientos militares en el suelo.",
+    howTo: [
+      "Adopta posicion de plancha baja.",
+      "Desplazate lateral o frontal manteniendo tension.",
+      "Mantén abdomen fuerte y cadera estable.",
+      "Respira sin perder la postura.",
+    ],
+  },
 ];
+
+const WEEK_DAYS = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
 
 const PLANS = {
   basico: {
@@ -68,8 +477,6 @@ const PLANS = {
   },
 };
 
-const WEEK_DAYS = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
-
 function buildWorkoutLog(planKey) {
   return PLANS[planKey].sessions.map((session, index) => ({
     id: index + 1,
@@ -84,14 +491,15 @@ const DEFAULT_STATE = {
   search: "",
   levelFilter: "todos",
   categoryFilter: "todas",
+  modeFilter: "mixto",
   completedDays: [true, false, false, true, false, false, false],
   workoutLog: buildWorkoutLog("basico"),
   userStats: {
     streak: 2,
     workouts: 6,
     progress: 35,
-    objective: "Lograr 8 dominadas estrictas y un L-sit de 20 s",
-    name: "Luis",
+    objective: "Escribe tu objetivo",
+    name: "",
     level: "Basico",
   },
 };
@@ -105,8 +513,13 @@ function loadState() {
       ...DEFAULT_STATE,
       ...parsed,
       userStats: { ...DEFAULT_STATE.userStats, ...(parsed.userStats || {}) },
-      completedDays: Array.isArray(parsed.completedDays) ? parsed.completedDays.slice(0, 7) : DEFAULT_STATE.completedDays,
-      workoutLog: Array.isArray(parsed.workoutLog) && parsed.workoutLog.length ? parsed.workoutLog : DEFAULT_STATE.workoutLog,
+      completedDays: Array.isArray(parsed.completedDays)
+        ? parsed.completedDays.slice(0, 7)
+        : DEFAULT_STATE.completedDays,
+      workoutLog:
+        Array.isArray(parsed.workoutLog) && parsed.workoutLog.length
+          ? parsed.workoutLog
+          : DEFAULT_STATE.workoutLog,
     };
   } catch {
     return DEFAULT_STATE;
@@ -123,21 +536,40 @@ function calculateAdherence(workoutLog) {
   return Math.round((done / workoutLog.length) * 100);
 }
 
-function filterExercises(list, search, levelFilter, categoryFilter) {
+function filterExercises(list, search, levelFilter, categoryFilter, modeFilter) {
   return list.filter((exercise) => {
-    const haystack = `${exercise.name} ${exercise.category} ${exercise.muscle}`.toLowerCase();
+    const haystack =
+      `${exercise.name} ${exercise.category} ${exercise.muscle} ${exercise.mode}`.toLowerCase();
     const matchesSearch = haystack.includes(String(search || "").toLowerCase());
     const matchesLevel = levelFilter === "todos" || exercise.level === levelFilter;
     const matchesCategory = categoryFilter === "todas" || exercise.category === categoryFilter;
-    return matchesSearch && matchesLevel && matchesCategory;
+    const matchesMode = modeFilter === "mixto" || exercise.mode === modeFilter;
+    return matchesSearch && matchesLevel && matchesCategory && matchesMode;
   });
 }
 
 function runTests() {
   console.assert(buildWorkoutLog("basico").length === 4, "El plan basico debe tener 4 ejercicios");
-  console.assert(calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75, "La adherencia debe ser 75");
-  console.assert(filterExercises(EXERCISES, "dominadas", "todos", "todas").length >= 3, "Debe encontrar ejercicios de dominadas");
-  console.assert(filterExercises(EXERCISES, "", "medio", "core").every((item) => item.level === "medio" && item.category === "core"), "Debe filtrar por nivel y categoria");
+  console.assert(
+    calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75,
+    "La adherencia debe ser 75"
+  );
+  console.assert(
+    filterExercises(EXERCISES, "dominadas", "todos", "todas", "mixto").length >= 3,
+    "Debe encontrar ejercicios de dominadas"
+  );
+  console.assert(
+    filterExercises(EXERCISES, "", "medio", "core", "mixto").every(
+      (item) => item.level === "medio" && item.category === "core"
+    ),
+    "Debe filtrar por nivel y categoria"
+  );
+  console.assert(
+    filterExercises(EXERCISES, "", "todos", "todas", "militar").every(
+      (item) => item.mode === "militar"
+    ),
+    "Debe filtrar por modo"
+  );
 }
 
 runTests();
@@ -153,7 +585,11 @@ function StatCard({ label, value }) {
 
 function Chip({ active, onClick, children }) {
   return (
-    <button type="button" onClick={onClick} style={{ ...styles.chip, ...(active ? styles.chipActive : {}) }}>
+    <button
+      type="button"
+      onClick={onClick}
+      style={{ ...styles.chip, ...(active ? styles.chipActive : {}) }}
+    >
       {children}
     </button>
   );
@@ -182,11 +618,27 @@ export default function App() {
   const adherence = calculateAdherence(state.workoutLog);
 
   const filteredExercises = useMemo(() => {
-    return filterExercises(EXERCISES, state.search, state.levelFilter, state.categoryFilter);
-  }, [state.search, state.levelFilter, state.categoryFilter]);
+    return filterExercises(
+      EXERCISES,
+      state.search,
+      state.levelFilter,
+      state.categoryFilter,
+      state.modeFilter
+    );
+  }, [state.search, state.levelFilter, state.categoryFilter, state.modeFilter]);
 
   function updateField(field, value) {
     setState((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function updateUser(field, value) {
+    setState((prev) => ({
+      ...prev,
+      userStats: {
+        ...prev.userStats,
+        [field]: value,
+      },
+    }));
   }
 
   function selectPlan(planKey) {
@@ -204,7 +656,9 @@ export default function App() {
 
   function toggleWorkout(id) {
     setState((prev) => {
-      const workoutLog = prev.workoutLog.map((item) => (item.id === id ? { ...item, done: !item.done } : item));
+      const workoutLog = prev.workoutLog.map((item) =>
+        item.id === id ? { ...item, done: !item.done } : item
+      );
       const doneCount = workoutLog.filter((item) => item.done).length;
       return {
         ...prev,
@@ -221,13 +675,17 @@ export default function App() {
   function toggleDay(index) {
     setState((prev) => {
       const nextValue = !prev.completedDays[index];
-      const completedDays = prev.completedDays.map((item, i) => (i === index ? nextValue : item));
+      const completedDays = prev.completedDays.map((item, i) =>
+        i === index ? nextValue : item
+      );
       return {
         ...prev,
         completedDays,
         userStats: {
           ...prev.userStats,
-          streak: nextValue ? prev.userStats.streak + 1 : Math.max(0, prev.userStats.streak - 1),
+          streak: nextValue
+            ? prev.userStats.streak + 1
+            : Math.max(0, prev.userStats.streak - 1),
         },
       };
     });
@@ -236,16 +694,6 @@ export default function App() {
   function resetApp() {
     window.localStorage.removeItem(STORAGE_KEY);
     setState(DEFAULT_STATE);
-  }
-
-  function updateUserName(name) {
-    setState((prev) => ({
-      ...prev,
-      userStats: {
-        ...prev.userStats,
-        name,
-      },
-    }));
   }
 
   if (!ready) {
@@ -258,21 +706,67 @@ export default function App() {
         <div style={styles.header}>
           <div>
             <div style={styles.brand}>CalisTrack</div>
-            <div style={styles.subtitle}>App limpia de calistenia, guardado local y lista para desplegar.</div>
+            <div style={styles.subtitle}>
+              App de calistenia y militar con guardado local.
+            </div>
           </div>
-          <button type="button" onClick={resetApp} style={styles.secondaryButton}>Reset</button>
+          <button type="button" onClick={resetApp} style={styles.secondaryButton}>
+            Reset
+          </button>
         </div>
 
-        <div style={styles.nameBar}>
-          <label htmlFor="user-name" style={styles.nameLabel}>Tu nombre</label>
-          <input
-            id="user-name"
-            type="text"
-            value={state.userStats.name}
-            onChange={(e) => updateUserName(e.target.value)}
-            placeholder="Escribe tu nombre"
-            style={styles.nameInput}
-          />
+        <div style={styles.profileGrid}>
+          <div style={styles.profileField}>
+            <label htmlFor="user-name" style={styles.fieldLabel}>Tu nombre</label>
+            <input
+              id="user-name"
+              type="text"
+              value={state.userStats.name}
+              onChange={(e) => updateUser("name", e.target.value)}
+              placeholder="Escribe tu nombre"
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.profileField}>
+            <label htmlFor="user-objective" style={styles.fieldLabel}>Tu objetivo</label>
+            <input
+              id="user-objective"
+              type="text"
+              value={state.userStats.objective}
+              onChange={(e) => updateUser("objective", e.target.value)}
+              placeholder="Ejemplo: 10 dominadas limpias"
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.profileField}>
+            <label htmlFor="user-level" style={styles.fieldLabel}>Nivel</label>
+            <select
+              id="user-level"
+              value={state.userStats.level}
+              onChange={(e) => updateUser("level", e.target.value)}
+              style={styles.input}
+            >
+              <option value="Basico">Basico</option>
+              <option value="Medio">Medio</option>
+              <option value="Experto">Experto</option>
+            </select>
+          </div>
+
+          <div style={styles.profileField}>
+            <label htmlFor="mode-filter" style={styles.fieldLabel}>Modo de entrenamiento</label>
+            <select
+              id="mode-filter"
+              value={state.modeFilter}
+              onChange={(e) => updateField("modeFilter", e.target.value)}
+              style={styles.input}
+            >
+              {TRAINING_MODES.map((mode) => (
+                <option key={mode} value={mode}>{mode}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div style={styles.content}>
@@ -286,7 +780,9 @@ export default function App() {
               </div>
 
               <div style={styles.card}>
-                <div style={styles.cardTitle}>Entrenamiento de hoy{state.userStats.name ? `, ${state.userStats.name}` : ""}</div>
+                <div style={styles.cardTitle}>
+                  Entrenamiento de hoy{state.userStats.name ? `, ${state.userStats.name}` : ""}
+                </div>
                 <div style={styles.cardHint}>{currentPlan.name} - {currentPlan.frequency}</div>
                 <div style={styles.stackMd}>
                   {state.workoutLog.map((item) => (
@@ -309,9 +805,10 @@ export default function App() {
 
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Resumen</div>
-                <div style={styles.paragraph}>Objetivo: {currentPlan.goal}</div>
+                <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
+                <div style={styles.paragraph}>Nivel actual: {state.userStats.level}</div>
+                <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
                 <div style={styles.paragraph}>Adherencia actual: {adherence}%</div>
-                <div style={styles.paragraph}>Nivel estimado: {state.userStats.level}</div>
               </div>
             </>
           )}
@@ -328,14 +825,22 @@ export default function App() {
                 />
                 <div style={styles.filterRowWrap}>
                   {["todos", "basico", "medio", "experto"].map((item) => (
-                    <Chip key={item} active={state.levelFilter === item} onClick={() => updateField("levelFilter", item)}>
+                    <Chip
+                      key={item}
+                      active={state.levelFilter === item}
+                      onClick={() => updateField("levelFilter", item)}
+                    >
                       {item}
                     </Chip>
                   ))}
                 </div>
                 <div style={styles.filterRowWrap}>
                   {["todas", "empuje", "tiron", "pierna", "core", "fullbody", "cardio"].map((item) => (
-                    <Chip key={item} active={state.categoryFilter === item} onClick={() => updateField("categoryFilter", item)}>
+                    <Chip
+                      key={item}
+                      active={state.categoryFilter === item}
+                      onClick={() => updateField("categoryFilter", item)}
+                    >
                       {item}
                     </Chip>
                   ))}
@@ -351,20 +856,35 @@ export default function App() {
                     </div>
                     <Badge active>{exercise.level}</Badge>
                   </div>
+
                   <div style={styles.pillRow}>
                     <Badge>{exercise.category}</Badge>
                     <Badge>{exercise.muscle}</Badge>
+                    <Badge>{exercise.mode}</Badge>
                   </div>
+
                   <div style={styles.infoGrid}>
-                    <div style={styles.infoBox}><div style={styles.infoLabel}>Series</div><div style={styles.infoValue}>{exercise.sets}</div></div>
-                    <div style={styles.infoBox}><div style={styles.infoLabel}>Reps</div><div style={styles.infoValue}>{exercise.reps}</div></div>
-                    <div style={styles.infoBox}><div style={styles.infoLabel}>Descanso</div><div style={styles.infoValue}>{exercise.rest}</div></div>
+                    <div style={styles.infoBox}>
+                      <div style={styles.infoLabel}>Series</div>
+                      <div style={styles.infoValue}>{exercise.sets}</div>
+                    </div>
+                    <div style={styles.infoBox}>
+                      <div style={styles.infoLabel}>Reps</div>
+                      <div style={styles.infoValue}>{exercise.reps}</div>
+                    </div>
+                    <div style={styles.infoBox}>
+                      <div style={styles.infoLabel}>Descanso</div>
+                      <div style={styles.infoValue}>{exercise.rest}</div>
+                    </div>
                   </div>
+
                   <div style={styles.howToBox}>
                     <div style={styles.howToTitle}>Como se hace</div>
                     <ol style={styles.howToList}>
                       {exercise.howTo.map((step, index) => (
-                        <li key={`${exercise.id}-${index}`} style={styles.howToItem}>{step}</li>
+                        <li key={`${exercise.id}-${index}`} style={styles.howToItem}>
+                          {step}
+                        </li>
                       ))}
                     </ol>
                   </div>
@@ -377,10 +897,14 @@ export default function App() {
             <>
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Seleccion de plan</div>
-                <div style={styles.cardHint}>Cambia el nivel y reinicia la sesion del dia.</div>
+                <div style={styles.cardHint}>Cambia el nivel para adaptar la rutina del usuario.</div>
                 <div style={styles.filterRowWrap}>
                   {["basico", "medio", "experto"].map((item) => (
-                    <Chip key={item} active={state.selectedPlan === item} onClick={() => selectPlan(item)}>
+                    <Chip
+                      key={item}
+                      active={state.selectedPlan === item}
+                      onClick={() => selectPlan(item)}
+                    >
                       {item}
                     </Chip>
                   ))}
@@ -389,7 +913,7 @@ export default function App() {
 
               <div style={styles.card}>
                 <div style={styles.cardTitle}>{currentPlan.name}</div>
-                <div style={styles.paragraph}>Objetivo: {currentPlan.goal}</div>
+                <div style={styles.paragraph}>Objetivo del plan: {currentPlan.goal}</div>
                 <div style={styles.paragraph}>Frecuencia: {currentPlan.frequency}</div>
                 <div style={styles.paragraph}>Nivel actual: {state.userStats.level}</div>
               </div>
@@ -422,7 +946,9 @@ export default function App() {
                       onClick={() => toggleDay(index)}
                       style={{ ...styles.dayBox, ...(state.completedDays[index] ? styles.dayBoxDone : {}) }}
                     >
-                      <div style={{ ...styles.dayText, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}>{day}</div>
+                      <div style={{ ...styles.dayText, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}>
+                        {day}
+                      </div>
                       <div style={{ ...styles.daySubtext, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}>
                         {state.completedDays[index] ? "Hecho" : "Pendiente"}
                       </div>
@@ -435,8 +961,8 @@ export default function App() {
                 <div style={styles.cardTitle}>Indicadores</div>
                 <div style={styles.paragraph}>Meta actual: {state.userStats.objective}</div>
                 <div style={styles.paragraph}>Nivel estimado: {state.userStats.level}</div>
+                <div style={styles.paragraph}>Modo de entrenamiento: {state.modeFilter}</div>
                 <div style={styles.paragraph}>Adherencia: {adherence}%</div>
-                <div style={styles.paragraph}>Guardado: local en el navegador.</div>
               </div>
             </>
           )}
@@ -444,9 +970,9 @@ export default function App() {
           {state.activeTab === "perfil" && (
             <div style={styles.card}>
               <div style={styles.cardTitle}>{state.userStats.name || "Tu perfil"}</div>
-              <div style={styles.paragraph}>Objetivo: fuerza, core y dominadas.</div>
-              <div style={styles.paragraph}>Frecuencia: {currentPlan.frequency}</div>
-              <div style={styles.paragraph}>Meta a 90 dias: 8 dominadas, 25 flexiones limpias y L-sit estable.</div>
+              <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
+              <div style={styles.paragraph}>Nivel: {state.userStats.level}</div>
+              <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
               <div style={styles.paragraph}>Arquitectura: React + Vite + localStorage.</div>
             </div>
           )}
@@ -532,25 +1058,19 @@ const styles = {
     fontWeight: 700,
     cursor: "pointer",
   },
-  nameBar: {
-    padding: "0 16px 8px 16px",
+  profileGrid: {
+    padding: 16,
     display: "grid",
-    gap: 8,
+    gap: 12,
   },
-  nameLabel: {
+  profileField: {
+    display: "grid",
+    gap: 6,
+  },
+  fieldLabel: {
     fontSize: 13,
     fontWeight: 700,
     color: "#334155",
-  },
-  nameInput: {
-    width: "100%",
-    border: "1px solid #cbd5e1",
-    borderRadius: 14,
-    padding: "12px 14px",
-    fontSize: 15,
-    color: "#0f172a",
-    background: "#ffffff",
-    boxSizing: "border-box",
   },
   content: {
     padding: 16,
@@ -703,7 +1223,7 @@ const styles = {
     marginBottom: 6,
   },
   infoValue: {
-    fontSize: "15px",
+    fontSize: 15,
     fontWeight: 700,
   },
   howToBox: {
@@ -713,7 +1233,7 @@ const styles = {
     background: "#f8fafc",
   },
   howToTitle: {
-    fontSize: "14px",
+    fontSize: 14,
     fontWeight: 700,
     color: "#0f172a",
     marginBottom: 8,
@@ -724,7 +1244,7 @@ const styles = {
     display: "grid",
     gap: 6,
     color: "#334155",
-    fontSize: "14px",
+    fontSize: 14,
     lineHeight: 1.45,
   },
   howToItem: {
