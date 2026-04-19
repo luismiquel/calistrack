@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "calistrack_v5";
+const STORAGE_KEY = "calistrack_v6";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
 const LEVELS = ["Basico", "Medio", "Experto"];
 
@@ -36,7 +36,7 @@ const EXERCISES = [
     description: "Base de fuerza del tren superior.",
     howTo: [
       "Coloca las manos un poco más abiertas que los hombros.",
-      "Aprieta abdomen y glúteos para mantener el cuerpo recto.",
+      "Aprieta abdomen y gluteos para mantener el cuerpo recto.",
       "Desciende hasta que el pecho se acerque al suelo.",
       "Empuja fuerte hasta extender los brazos.",
     ],
@@ -54,8 +54,8 @@ const EXERCISES = [
     description: "Progresion ideal antes de dominadas estrictas.",
     howTo: [
       "Agarra la barra con el cuerpo por debajo.",
-      "Mantén talones apoyados y cuerpo en línea recta.",
-      "Tira del pecho hacia la barra juntando escápulas.",
+      "Mantén talones apoyados y cuerpo en linea recta.",
+      "Tira del pecho hacia la barra juntando escapulas.",
       "Baja de forma lenta y controlada.",
     ],
   },
@@ -74,7 +74,7 @@ const EXERCISES = [
       "Usa banda o apoyo para reducir carga.",
       "Agarra la barra con firmeza y activa hombros.",
       "Sube llevando el pecho hacia la barra.",
-      "Desciende despacio hasta extensión casi completa.",
+      "Desciende despacio hasta extension casi completa.",
     ],
   },
   {
@@ -90,7 +90,7 @@ const EXERCISES = [
     description: "Ejercicio esencial de tren inferior.",
     howTo: [
       "Coloca los pies al ancho de hombros.",
-      "Empuja la cadera hacia atrás al bajar.",
+      "Empuja la cadera hacia atras al bajar.",
       "Mantén el pecho arriba y talones en el suelo.",
       "Sube extendiendo rodillas y cadera.",
     ],
@@ -109,7 +109,7 @@ const EXERCISES = [
     howTo: [
       "Apoya antebrazos y puntas de los pies.",
       "Mantén hombros alineados con codos.",
-      "Aprieta abdomen y glúteos.",
+      "Aprieta abdomen y gluteos.",
       "Evita hundir o elevar demasiado la cadera.",
     ],
   },
@@ -128,7 +128,7 @@ const EXERCISES = [
       "Apoya las manos en el borde del banco.",
       "Extiende las piernas hacia delante.",
       "Baja flexionando codos cerca del cuerpo.",
-      "Empuja hasta volver a la posición inicial.",
+      "Empuja hasta volver a la posicion inicial.",
     ],
   },
   {
@@ -162,7 +162,7 @@ const EXERCISES = [
     description: "Fuerza real del tren superior.",
     howTo: [
       "Cuelga con agarre firme y hombros activos.",
-      "Inicia el tirón desde la espalda, no solo con brazos.",
+      "Inicia el tiron desde la espalda, no solo con brazos.",
       "Lleva el pecho hacia la barra.",
       "Baja controlando sin balancearte.",
     ],
@@ -179,7 +179,7 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Paso previo para L-sit.",
     howTo: [
-      "Cuelga de una barra o apóyate en paralelas.",
+      "Cuelga de una barra o apoyate en paralelas.",
       "Sube las rodillas hacia el pecho.",
       "Evita impulsarte con balanceo.",
       "Baja despacio manteniendo el abdomen activo.",
@@ -215,7 +215,7 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Progresion intermedia de compresion.",
     howTo: [
-      "Apóyate en paralelas o bloques.",
+      "Apoyate en paralelas o bloques.",
       "Eleva el cuerpo con hombros deprimidos.",
       "Lleva rodillas al pecho manteniendo pies fuera del suelo.",
       "Sostén sin redondear demasiado la espalda.",
@@ -236,7 +236,7 @@ const EXERCISES = [
       "Apoya los pies en una superficie elevada.",
       "Coloca las manos firmes en el suelo.",
       "Baja controlando el pecho hacia el suelo.",
-      "Empuja sin perder alineación corporal.",
+      "Empuja sin perder alineacion corporal.",
     ],
   },
   {
@@ -253,7 +253,7 @@ const EXERCISES = [
     howTo: [
       "Coloca cadera alta formando una V invertida.",
       "Baja la cabeza entre las manos.",
-      "Mantén codos orientados hacia atrás.",
+      "Mantén codos orientados hacia atras.",
       "Empuja hacia arriba llevando carga a hombros.",
     ],
   },
@@ -269,7 +269,7 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Fuerza, equilibrio y movilidad.",
     howTo: [
-      "Sujétate a un apoyo ligero.",
+      "Sujetate a un apoyo ligero.",
       "Extiende una pierna al frente.",
       "Baja sobre la pierna de apoyo sin perder equilibrio.",
       "Sube empujando fuerte con el pie apoyado.",
@@ -306,7 +306,7 @@ const EXERCISES = [
     description: "Muy utiles para progresion a muscle-up.",
     howTo: [
       "Inicia desde colgado estable.",
-      "Tira con máxima velocidad y potencia.",
+      "Tira con maxima velocidad y potencia.",
       "Busca que el pecho suba lo más alto posible.",
       "Baja con control para repetir limpio.",
     ],
@@ -326,7 +326,7 @@ const EXERCISES = [
       "Apoya hombros en banco y sujeta un punto firme.",
       "Eleva el cuerpo en bloque.",
       "Desciende lentamente sin doblarte por la cadera.",
-      "Vuelve arriba manteniendo tensión abdominal.",
+      "Vuelve arriba manteniendo tension abdominal.",
     ],
   },
   {
@@ -342,7 +342,7 @@ const EXERCISES = [
     description: "Ejercicio militar clasico de resistencia y potencia.",
     howTo: [
       "Desde pie, baja las manos al suelo.",
-      "Lleva los pies atrás a posición de plancha.",
+      "Lleva los pies atras a posicion de plancha.",
       "Vuelve con los pies hacia delante.",
       "Salta extendiendo el cuerpo arriba.",
     ],
@@ -362,7 +362,7 @@ const EXERCISES = [
       "Junta las manos formando un diamante.",
       "Mantén codos cerca del cuerpo.",
       "Baja controlando el pecho hacia las manos.",
-      "Empuja fuerte hasta extensión completa.",
+      "Empuja fuerte hasta extension completa.",
     ],
   },
   {
@@ -377,10 +377,10 @@ const EXERCISES = [
     mode: "militar",
     description: "Trabajo cardiovascular tipo militar.",
     howTo: [
-      "Corre en el mismo sitio a máxima intensidad.",
+      "Corre en el mismo sitio a maxima intensidad.",
       "Eleva rodillas de forma activa.",
-      "Mueve brazos con ritmo rápido.",
-      "Mantén el tronco estable y respiración viva.",
+      "Mueve brazos con ritmo rapido.",
+      "Mantén el tronco estable y respiracion viva.",
     ],
   },
   {
@@ -395,8 +395,8 @@ const EXERCISES = [
     mode: "militar",
     description: "Alta intensidad usada en entrenamiento funcional militar.",
     howTo: [
-      "Colócate en plancha alta.",
-      "Lleva una rodilla al pecho y alterna rápido.",
+      "Colocate en plancha alta.",
+      "Lleva una rodilla al pecho y alterna rapido.",
       "Mantén hombros sobre las manos.",
       "Evita mover demasiado la cadera.",
     ],
@@ -431,8 +431,8 @@ const EXERCISES = [
     mode: "militar",
     description: "Simula desplazamientos militares en el suelo.",
     howTo: [
-      "Adopta posición de plancha baja.",
-      "Desplázate lateral o frontal manteniendo tensión.",
+      "Adopta posicion de plancha baja.",
+      "Desplazate lateral o frontal manteniendo tension.",
       "Mantén abdomen fuerte y cadera estable.",
       "Respira sin perder la postura.",
     ],
@@ -525,6 +525,7 @@ const DEFAULT_STATE = {
   modeFilter: "mixto",
   completedDays: [true, false, false, true, false, false, false],
   workoutLog: buildWorkoutLog("basico"),
+  history: [],
   userStats: {
     streak: 2,
     workouts: 6,
@@ -544,8 +545,14 @@ function loadState() {
       ...DEFAULT_STATE,
       ...parsed,
       userStats: { ...DEFAULT_STATE.userStats, ...(parsed.userStats || {}) },
-      completedDays: Array.isArray(parsed.completedDays) ? parsed.completedDays.slice(0, 7) : DEFAULT_STATE.completedDays,
-      workoutLog: Array.isArray(parsed.workoutLog) && parsed.workoutLog.length ? parsed.workoutLog : DEFAULT_STATE.workoutLog,
+      completedDays: Array.isArray(parsed.completedDays)
+        ? parsed.completedDays.slice(0, 7)
+        : DEFAULT_STATE.completedDays,
+      workoutLog:
+        Array.isArray(parsed.workoutLog) && parsed.workoutLog.length
+          ? parsed.workoutLog
+          : DEFAULT_STATE.workoutLog,
+      history: Array.isArray(parsed.history) ? parsed.history : DEFAULT_STATE.history,
     };
   } catch {
     return DEFAULT_STATE;
@@ -564,7 +571,8 @@ function calculateAdherence(workoutLog) {
 
 function filterExercises(list, search, levelFilter, categoryFilter, modeFilter) {
   return list.filter((exercise) => {
-    const haystack = `${exercise.name} ${exercise.category} ${exercise.muscle} ${exercise.mode}`.toLowerCase();
+    const haystack =
+      `${exercise.name} ${exercise.category} ${exercise.muscle} ${exercise.mode}`.toLowerCase();
     const matchesSearch = haystack.includes(String(search || "").toLowerCase());
     const matchesLevel = levelFilter === "todos" || exercise.level === levelFilter;
     const matchesCategory = categoryFilter === "todas" || exercise.category === categoryFilter;
@@ -575,10 +583,24 @@ function filterExercises(list, search, levelFilter, categoryFilter, modeFilter) 
 
 function runTests() {
   console.assert(buildWorkoutLog("basico").length === 4, "El plan basico debe tener 4 ejercicios");
-  console.assert(calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75, "La adherencia debe ser 75");
-  console.assert(filterExercises(EXERCISES, "dominadas", "todos", "todas", "mixto").length >= 3, "Debe encontrar ejercicios de dominadas");
-  console.assert(filterExercises(EXERCISES, "", "todos", "todas", "militar").every((item) => item.mode === "militar"), "Debe filtrar por modo");
-  console.assert(buildAutoWorkout("militar", "Basico").every((item) => typeof item.name === "string"), "Debe crear rutina automática");
+  console.assert(
+    calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75,
+    "La adherencia debe ser 75"
+  );
+  console.assert(
+    filterExercises(EXERCISES, "dominadas", "todos", "todas", "mixto").length >= 3,
+    "Debe encontrar ejercicios de dominadas"
+  );
+  console.assert(
+    filterExercises(EXERCISES, "", "todos", "todas", "militar").every(
+      (item) => item.mode === "militar"
+    ),
+    "Debe filtrar por modo"
+  );
+  console.assert(
+    buildAutoWorkout("militar", "Basico").every((item) => typeof item.name === "string"),
+    "Debe crear rutina automática"
+  );
 }
 
 runTests();
@@ -594,7 +616,11 @@ function StatCard({ label, value }) {
 
 function Chip({ active, onClick, children }) {
   return (
-    <button type="button" onClick={onClick} style={{ ...styles.chip, ...(active ? styles.chipActive : {}) }}>
+    <button
+      type="button"
+      onClick={onClick}
+      style={{ ...styles.chip, ...(active ? styles.chipActive : {}) }}
+    >
       {children}
     </button>
   );
@@ -638,7 +664,13 @@ export default function App() {
   const adherence = calculateAdherence(state.workoutLog);
 
   const filteredExercises = useMemo(() => {
-    return filterExercises(EXERCISES, state.search, state.levelFilter, state.categoryFilter, state.modeFilter);
+    return filterExercises(
+      EXERCISES,
+      state.search,
+      state.levelFilter,
+      state.categoryFilter,
+      state.modeFilter
+    );
   }, [state.search, state.levelFilter, state.categoryFilter, state.modeFilter]);
 
   function updateField(field, value) {
@@ -648,7 +680,10 @@ export default function App() {
   function updateUser(field, value) {
     setState((prev) => ({
       ...prev,
-      userStats: { ...prev.userStats, [field]: value },
+      userStats: {
+        ...prev.userStats,
+        [field]: value,
+      },
     }));
   }
 
@@ -678,7 +713,9 @@ export default function App() {
 
   function toggleWorkout(id) {
     setState((prev) => {
-      const workoutLog = prev.workoutLog.map((item) => (item.id === id ? { ...item, done: !item.done } : item));
+      const workoutLog = prev.workoutLog.map((item) =>
+        item.id === id ? { ...item, done: !item.done } : item
+      );
       const doneCount = workoutLog.filter((item) => item.done).length;
       return {
         ...prev,
@@ -705,7 +742,9 @@ export default function App() {
   function toggleDay(index) {
     setState((prev) => {
       const nextValue = !prev.completedDays[index];
-      const completedDays = prev.completedDays.map((item, i) => (i === index ? nextValue : item));
+      const completedDays = prev.completedDays.map((item, i) =>
+        i === index ? nextValue : item
+      );
       return {
         ...prev,
         completedDays,
@@ -713,6 +752,25 @@ export default function App() {
           ...prev.userStats,
           streak: nextValue ? prev.userStats.streak + 1 : Math.max(0, prev.userStats.streak - 1),
         },
+      };
+    });
+  }
+
+  function saveWorkoutToHistory() {
+    setState((prev) => {
+      const newEntry = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        completed: prev.workoutLog.filter((w) => w.done).length,
+        total: prev.workoutLog.length,
+        adherence: calculateAdherence(prev.workoutLog),
+        mode: prev.modeFilter,
+        level: prev.userStats.level,
+      };
+
+      return {
+        ...prev,
+        history: [newEntry, ...prev.history].slice(0, 20),
       };
     });
   }
@@ -736,28 +794,61 @@ export default function App() {
             <div style={styles.brand}>CalisTrack</div>
             <div style={styles.subtitle}>App de calistenia y militar con guardado local.</div>
           </div>
-          <button type="button" onClick={resetApp} style={styles.secondaryButton}>Reset</button>
+          <button type="button" onClick={resetApp} style={styles.secondaryButton}>
+            Reset
+          </button>
         </div>
 
         <div style={styles.profileGrid}>
           <div style={styles.profileField}>
             <label htmlFor="user-name" style={styles.fieldLabel}>Tu nombre</label>
-            <input id="user-name" type="text" value={state.userStats.name} onChange={(e) => updateUser("name", e.target.value)} placeholder="Escribe tu nombre" style={styles.input} />
+            <input
+              id="user-name"
+              type="text"
+              value={state.userStats.name}
+              onChange={(e) => updateUser("name", e.target.value)}
+              placeholder="Escribe tu nombre"
+              style={styles.input}
+            />
           </div>
+
           <div style={styles.profileField}>
             <label htmlFor="user-objective" style={styles.fieldLabel}>Tu objetivo</label>
-            <input id="user-objective" type="text" value={state.userStats.objective} onChange={(e) => updateUser("objective", e.target.value)} placeholder="Ejemplo: 10 dominadas limpias" style={styles.input} />
+            <input
+              id="user-objective"
+              type="text"
+              value={state.userStats.objective}
+              onChange={(e) => updateUser("objective", e.target.value)}
+              placeholder="Ejemplo: 10 dominadas limpias"
+              style={styles.input}
+            />
           </div>
+
           <div style={styles.profileField}>
             <label htmlFor="user-level" style={styles.fieldLabel}>Nivel</label>
-            <select id="user-level" value={state.userStats.level} onChange={(e) => updateUser("level", e.target.value)} style={styles.input}>
-              {LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
+            <select
+              id="user-level"
+              value={state.userStats.level}
+              onChange={(e) => updateUser("level", e.target.value)}
+              style={styles.input}
+            >
+              {LEVELS.map((level) => (
+                <option key={level} value={level}>{level}</option>
+              ))}
             </select>
           </div>
+
           <div style={styles.profileField}>
             <label htmlFor="mode-filter" style={styles.fieldLabel}>Modo de entrenamiento</label>
-            <select id="mode-filter" value={state.modeFilter} onChange={(e) => updateField("modeFilter", e.target.value)} style={styles.input}>
-              {TRAINING_MODES.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
+            <select
+              id="mode-filter"
+              value={state.modeFilter}
+              onChange={(e) => updateField("modeFilter", e.target.value)}
+              style={styles.input}
+            >
+              {TRAINING_MODES.map((mode) => (
+                <option key={mode} value={mode}>{mode}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -776,18 +867,25 @@ export default function App() {
                 <div style={styles.timerBox}>
                   <div style={styles.timerTitle}>Descanso activo</div>
                   <div style={styles.timerValue}>{restTimer}s</div>
-                  <button type="button" onClick={stopRest} style={styles.stopRestButton}>Parar</button>
+                  <button type="button" onClick={stopRest} style={styles.stopRestButton}>
+                    Parar
+                  </button>
                 </div>
               )}
 
               <div style={styles.card}>
                 <div style={styles.rowBetween}>
                   <div>
-                    <div style={styles.cardTitle}>Entrenamiento de hoy{state.userStats.name ? `, ${state.userStats.name}` : ""}</div>
+                    <div style={styles.cardTitle}>
+                      Entrenamiento de hoy{state.userStats.name ? `, ${state.userStats.name}` : ""}
+                    </div>
                     <div style={styles.cardHint}>{currentPlan.name} - {currentPlan.frequency}</div>
                   </div>
-                  <button type="button" onClick={generateAutomaticRoutine} style={styles.secondaryButton}>Generar rutina</button>
+                  <button type="button" onClick={generateAutomaticRoutine} style={styles.secondaryButton}>
+                    Generar rutina
+                  </button>
                 </div>
+
                 <div style={styles.stackMd}>
                   {state.workoutLog.map((item) => (
                     <div key={item.id} style={styles.listRow}>
@@ -796,10 +894,16 @@ export default function App() {
                         <div style={styles.rowHint}>{item.prescription}</div>
                         <div style={styles.rowHint}>Descanso: {item.rest || 60}s</div>
                       </div>
+
                       <div style={styles.buttonColumn}>
-                        <button type="button" onClick={() => toggleWorkout(item.id)} style={{ ...styles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}>
+                        <button
+                          type="button"
+                          onClick={() => toggleWorkout(item.id)}
+                          style={{ ...styles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}
+                        >
                           {item.done ? "Hecho" : "Marcar"}
                         </button>
+
                         <button
                           type="button"
                           onClick={() => startRest(item.rest || 60, item.id)}
@@ -814,6 +918,10 @@ export default function App() {
                     </div>
                   ))}
                 </div>
+
+                <button type="button" onClick={saveWorkoutToHistory} style={styles.primaryButton}>
+                  Guardar entreno
+                </button>
               </div>
 
               <div style={styles.card}>
@@ -830,15 +938,34 @@ export default function App() {
             <>
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Biblioteca de ejercicios</div>
-                <input value={state.search} onChange={(e) => updateField("search", e.target.value)} placeholder="Buscar ejercicio o musculo" style={styles.input} />
+                <input
+                  value={state.search}
+                  onChange={(e) => updateField("search", e.target.value)}
+                  placeholder="Buscar ejercicio o musculo"
+                  style={styles.input}
+                />
+
                 <div style={styles.filterRowWrap}>
                   {["todos", "basico", "medio", "experto"].map((item) => (
-                    <Chip key={item} active={state.levelFilter === item} onClick={() => updateField("levelFilter", item)}>{item}</Chip>
+                    <Chip
+                      key={item}
+                      active={state.levelFilter === item}
+                      onClick={() => updateField("levelFilter", item)}
+                    >
+                      {item}
+                    </Chip>
                   ))}
                 </div>
+
                 <div style={styles.filterRowWrap}>
                   {["todas", "empuje", "tiron", "pierna", "core", "fullbody", "cardio"].map((item) => (
-                    <Chip key={item} active={state.categoryFilter === item} onClick={() => updateField("categoryFilter", item)}>{item}</Chip>
+                    <Chip
+                      key={item}
+                      active={state.categoryFilter === item}
+                      onClick={() => updateField("categoryFilter", item)}
+                    >
+                      {item}
+                    </Chip>
                   ))}
                 </div>
               </div>
@@ -852,20 +979,36 @@ export default function App() {
                     </div>
                     <Badge active>{exercise.level}</Badge>
                   </div>
+
                   <div style={styles.pillRow}>
                     <Badge>{exercise.category}</Badge>
                     <Badge>{exercise.muscle}</Badge>
                     <Badge>{exercise.mode}</Badge>
                   </div>
+
                   <div style={styles.infoGrid}>
-                    <div style={styles.infoBox}><div style={styles.infoLabel}>Series</div><div style={styles.infoValue}>{exercise.sets}</div></div>
-                    <div style={styles.infoBox}><div style={styles.infoLabel}>Reps</div><div style={styles.infoValue}>{exercise.reps}</div></div>
-                    <div style={styles.infoBox}><div style={styles.infoLabel}>Descanso</div><div style={styles.infoValue}>{exercise.rest}s</div></div>
+                    <div style={styles.infoBox}>
+                      <div style={styles.infoLabel}>Series</div>
+                      <div style={styles.infoValue}>{exercise.sets}</div>
+                    </div>
+                    <div style={styles.infoBox}>
+                      <div style={styles.infoLabel}>Reps</div>
+                      <div style={styles.infoValue}>{exercise.reps}</div>
+                    </div>
+                    <div style={styles.infoBox}>
+                      <div style={styles.infoLabel}>Descanso</div>
+                      <div style={styles.infoValue}>{exercise.rest}s</div>
+                    </div>
                   </div>
+
                   <div style={styles.howToBox}>
                     <div style={styles.howToTitle}>Como se hace</div>
                     <ol style={styles.howToList}>
-                      {exercise.howTo.map((step, index) => <li key={`${exercise.id}-${index}`} style={styles.howToItem}>{step}</li>)}
+                      {exercise.howTo.map((step, index) => (
+                        <li key={`${exercise.id}-${index}`} style={styles.howToItem}>
+                          {step}
+                        </li>
+                      ))}
                     </ol>
                   </div>
                 </div>
@@ -880,10 +1023,17 @@ export default function App() {
                 <div style={styles.cardHint}>Cambia el nivel para adaptar la rutina del usuario.</div>
                 <div style={styles.filterRowWrap}>
                   {["basico", "medio", "experto"].map((item) => (
-                    <Chip key={item} active={state.selectedPlan === item} onClick={() => selectPlan(item)}>{item}</Chip>
+                    <Chip
+                      key={item}
+                      active={state.selectedPlan === item}
+                      onClick={() => selectPlan(item)}
+                    >
+                      {item}
+                    </Chip>
                   ))}
                 </div>
               </div>
+
               <div style={styles.card}>
                 <div style={styles.cardTitle}>{currentPlan.name}</div>
                 <div style={styles.paragraph}>Objetivo del plan: {currentPlan.goal}</div>
@@ -899,19 +1049,51 @@ export default function App() {
                 <div style={styles.cardTitle}>Constancia semanal</div>
                 <div style={styles.weekGrid}>
                   {WEEK_DAYS.map((day, index) => (
-                    <button key={day} type="button" onClick={() => toggleDay(index)} style={{ ...styles.dayBox, ...(state.completedDays[index] ? styles.dayBoxDone : {}) }}>
-                      <div style={{ ...styles.dayText, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}>{day}</div>
-                      <div style={{ ...styles.daySubtext, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}>{state.completedDays[index] ? "Hecho" : "Pendiente"}</div>
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => toggleDay(index)}
+                      style={{ ...styles.dayBox, ...(state.completedDays[index] ? styles.dayBoxDone : {}) }}
+                    >
+                      <div
+                        style={{ ...styles.dayText, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}
+                      >
+                        {day}
+                      </div>
+                      <div
+                        style={{ ...styles.daySubtext, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}
+                      >
+                        {state.completedDays[index] ? "Hecho" : "Pendiente"}
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
+
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Indicadores</div>
                 <div style={styles.paragraph}>Meta actual: {state.userStats.objective}</div>
                 <div style={styles.paragraph}>Nivel estimado: {state.userStats.level}</div>
                 <div style={styles.paragraph}>Modo de entrenamiento: {state.modeFilter}</div>
                 <div style={styles.paragraph}>Adherencia: {adherence}%</div>
+              </div>
+
+              <div style={styles.card}>
+                <div style={styles.cardTitle}>Historial</div>
+                {state.history.length === 0 ? (
+                  <div style={styles.paragraph}>Aun no hay entrenamientos guardados.</div>
+                ) : (
+                  <div style={styles.stackMd}>
+                    {state.history.map((entry) => (
+                      <div key={entry.id} style={styles.historyRow}>
+                        <div style={styles.rowTitle}>{entry.date}</div>
+                        <div style={styles.rowHint}>
+                          {entry.completed}/{entry.total} completados - {entry.adherence}% - {entry.mode} - {entry.level}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -935,7 +1117,12 @@ export default function App() {
             { key: "progreso", label: "Progreso" },
             { key: "perfil", label: "Perfil" },
           ].map((tab) => (
-            <button key={tab.key} type="button" onClick={() => updateField("activeTab", tab.key)} style={{ ...styles.tabItem, ...(state.activeTab === tab.key ? styles.tabItemActive : {}) }}>
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => updateField("activeTab", tab.key)}
+              style={{ ...styles.tabItem, ...(state.activeTab === tab.key ? styles.tabItemActive : {}) }}
+            >
               {tab.label}
             </button>
           ))}
@@ -946,61 +1133,367 @@ export default function App() {
 }
 
 const styles = {
-  page: { minHeight: "100vh", background: "#f8fafc", display: "flex", justifyContent: "center", padding: 24, fontFamily: "Inter, system-ui, sans-serif", color: "#0f172a" },
-  phoneFrame: { width: "100%", maxWidth: 430, minHeight: 820, background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 32, boxShadow: "0 16px 40px rgba(15,23,42,0.08)", position: "relative", overflow: "hidden" },
-  loading: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Inter, system-ui, sans-serif", background: "#f8fafc", color: "#0f172a" },
-  header: { padding: 20, display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, borderBottom: "1px solid #e2e8f0" },
-  brand: { fontSize: 28, fontWeight: 800 },
-  subtitle: { fontSize: 14, color: "#475569", marginTop: 4, maxWidth: 230, lineHeight: 1.4 },
-  secondaryButton: { border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 14, padding: "10px 14px", fontWeight: 700, cursor: "pointer" },
-  profileGrid: { padding: 16, display: "grid", gap: 12 },
-  profileField: { display: "grid", gap: 6 },
-  fieldLabel: { fontSize: 13, fontWeight: 700, color: "#334155" },
-  content: { padding: 16, paddingBottom: 96, display: "grid", gap: 14 },
-  statsGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 },
-  statCard: { background: "#ffffff", borderRadius: 18, padding: 16, border: "1px solid #e2e8f0" },
-  statLabel: { fontSize: 13, color: "#64748b", marginBottom: 8 },
-  statValue: { fontSize: 22, fontWeight: 800 },
-  card: { background: "#ffffff", borderRadius: 22, padding: 16, border: "1px solid #e2e8f0", display: "grid", gap: 12 },
-  cardTitle: { fontSize: 20, fontWeight: 700 },
-  cardHint: { fontSize: 14, color: "#64748b", lineHeight: 1.4 },
-  paragraph: { fontSize: 15, color: "#334155", lineHeight: 1.5 },
-  stackMd: { display: "grid", gap: 10 },
-  listRow: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, border: "1px solid #e2e8f0", borderRadius: 18, padding: 14 },
-  rowTitle: { fontSize: 16, fontWeight: 700 },
-  rowHint: { fontSize: 13, color: "#64748b", marginTop: 3 },
-  actionButton: { background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 14, padding: "10px 14px", fontWeight: 700, cursor: "pointer" },
-  actionButtonDone: { background: "#0f172a", color: "#ffffff", border: "1px solid #0f172a" },
-  buttonColumn: { display: "grid", gap: 8 },
-  restButton: { background: "#e2e8f0", border: "none", borderRadius: 14, padding: "10px 14px", fontWeight: 700, cursor: "pointer" },
-  restButtonActive: { background: "#dbeafe", color: "#1d4ed8" },
-  timerBox: { background: "#0f172a", color: "#ffffff", borderRadius: 22, padding: 16, display: "grid", gap: 8, textAlign: "center" },
-  timerTitle: { fontSize: 14, fontWeight: 700, opacity: 0.9 },
-  timerValue: { fontSize: 28, fontWeight: 800 },
-  stopRestButton: { background: "#ffffff", color: "#0f172a", border: "none", borderRadius: 12, padding: "10px 14px", fontWeight: 700, cursor: "pointer", justifySelf: "center" },
-  input: { width: "100%", border: "1px solid #cbd5e1", borderRadius: 16, padding: "12px 14px", fontSize: 15, color: "#0f172a", background: "#ffffff", boxSizing: "border-box" },
-  filterRowWrap: { display: "flex", flexWrap: "wrap", gap: 8 },
-  chip: { padding: "10px 14px", borderRadius: 999, background: "#e2e8f0", border: "none", fontWeight: 600, cursor: "pointer", textTransform: "capitalize" },
-  chipActive: { background: "#0f172a", color: "#ffffff" },
-  badge: { padding: "8px 12px", borderRadius: 999, background: "#eef2ff", color: "#1e293b", fontSize: 12, fontWeight: 600, textTransform: "capitalize" },
-  badgeActive: { background: "#dbeafe", color: "#1d4ed8" },
-  rowBetween: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 },
-  pillRow: { display: "flex", flexWrap: "wrap", gap: 8 },
-  infoGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 },
-  infoBox: { border: "1px solid #e2e8f0", borderRadius: 16, padding: 12 },
-  infoLabel: { fontSize: 12, color: "#64748b", marginBottom: 6 },
-  infoValue: { fontSize: 15, fontWeight: 700 },
-  howToBox: { border: "1px solid #e2e8f0", borderRadius: 16, padding: 12, background: "#f8fafc" },
-  howToTitle: { fontSize: 14, fontWeight: 700, color: "#0f172a", marginBottom: 8 },
-  howToList: { margin: 0, paddingLeft: 18, display: "grid", gap: 6, color: "#334155", fontSize: 14, lineHeight: 1.45 },
-  howToItem: { paddingLeft: 2 },
-  weekGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 },
-  dayBox: { border: "1px solid #cbd5e1", borderRadius: 18, padding: "16px 10px", background: "#ffffff", textAlign: "center", cursor: "pointer" },
-  dayBoxDone: { background: "#0f172a", border: "1px solid #0f172a" },
-  dayText: { color: "#0f172a", fontWeight: 700 },
-  daySubtext: { color: "#64748b", fontSize: 12, marginTop: 4 },
-  dayTextDone: { color: "#ffffff" },
-  tabBar: { position: "absolute", left: 12, right: 12, bottom: 14, background: "#ffffff", borderRadius: 24, border: "1px solid #e2e8f0", padding: 6, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 4 },
-  tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
-  tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
+  page: {
+    minHeight: "100vh",
+    background: "#f8fafc",
+    display: "flex",
+    justifyContent: "center",
+    padding: 24,
+    fontFamily: "Inter, system-ui, sans-serif",
+    color: "#0f172a",
+  },
+  phoneFrame: {
+    width: "100%",
+    maxWidth: 430,
+    minHeight: 820,
+    background: "#ffffff",
+    border: "1px solid #e2e8f0",
+    borderRadius: 32,
+    boxShadow: "0 16px 40px rgba(15,23,42,0.08)",
+    position: "relative",
+    overflow: "hidden",
+  },
+  loading: {
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontFamily: "Inter, system-ui, sans-serif",
+    background: "#f8fafc",
+    color: "#0f172a",
+  },
+  header: {
+    padding: 20,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 12,
+    borderBottom: "1px solid #e2e8f0",
+  },
+  brand: {
+    fontSize: 28,
+    fontWeight: 800,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#475569",
+    marginTop: 4,
+    maxWidth: 230,
+    lineHeight: 1.4,
+  },
+  secondaryButton: {
+    border: "1px solid #cbd5e1",
+    background: "#ffffff",
+    borderRadius: 14,
+    padding: "10px 14px",
+    fontWeight: 700,
+    cursor: "pointer",
+  },
+  primaryButton: {
+    border: "1px solid #0f172a",
+    background: "#0f172a",
+    color: "#ffffff",
+    borderRadius: 14,
+    padding: "12px 14px",
+    fontWeight: 700,
+    cursor: "pointer",
+  },
+  profileGrid: {
+    padding: 16,
+    display: "grid",
+    gap: 12,
+  },
+  profileField: {
+    display: "grid",
+    gap: 6,
+  },
+  fieldLabel: {
+    fontSize: 13,
+    fontWeight: 700,
+    color: "#334155",
+  },
+  content: {
+    padding: 16,
+    paddingBottom: 96,
+    display: "grid",
+    gap: 14,
+  },
+  statsGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 12,
+  },
+  statCard: {
+    background: "#ffffff",
+    borderRadius: 18,
+    padding: 16,
+    border: "1px solid #e2e8f0",
+  },
+  statLabel: {
+    fontSize: 13,
+    color: "#64748b",
+    marginBottom: 8,
+  },
+  statValue: {
+    fontSize: 22,
+    fontWeight: 800,
+  },
+  card: {
+    background: "#ffffff",
+    borderRadius: 22,
+    padding: 16,
+    border: "1px solid #e2e8f0",
+    display: "grid",
+    gap: 12,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: 700,
+  },
+  cardHint: {
+    fontSize: 14,
+    color: "#64748b",
+    lineHeight: 1.4,
+  },
+  paragraph: {
+    fontSize: 15,
+    color: "#334155",
+    lineHeight: 1.5,
+  },
+  stackMd: {
+    display: "grid",
+    gap: 10,
+  },
+  listRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    border: "1px solid #e2e8f0",
+    borderRadius: 18,
+    padding: 14,
+  },
+  rowTitle: {
+    fontSize: 16,
+    fontWeight: 700,
+  },
+  rowHint: {
+    fontSize: 13,
+    color: "#64748b",
+    marginTop: 3,
+  },
+  actionButton: {
+    background: "#ffffff",
+    border: "1px solid #cbd5e1",
+    borderRadius: 14,
+    padding: "10px 14px",
+    fontWeight: 700,
+    cursor: "pointer",
+  },
+  actionButtonDone: {
+    background: "#0f172a",
+    color: "#ffffff",
+    border: "1px solid #0f172a",
+  },
+  buttonColumn: {
+    display: "grid",
+    gap: 8,
+  },
+  restButton: {
+    background: "#e2e8f0",
+    border: "none",
+    borderRadius: 14,
+    padding: "10px 14px",
+    fontWeight: 700,
+    cursor: "pointer",
+  },
+  restButtonActive: {
+    background: "#dbeafe",
+    color: "#1d4ed8",
+  },
+  timerBox: {
+    background: "#0f172a",
+    color: "#ffffff",
+    borderRadius: 22,
+    padding: 16,
+    display: "grid",
+    gap: 8,
+    textAlign: "center",
+  },
+  timerTitle: {
+    fontSize: 14,
+    fontWeight: 700,
+    opacity: 0.9,
+  },
+  timerValue: {
+    fontSize: 28,
+    fontWeight: 800,
+  },
+  stopRestButton: {
+    background: "#ffffff",
+    color: "#0f172a",
+    border: "none",
+    borderRadius: 12,
+    padding: "10px 14px",
+    fontWeight: 700,
+    cursor: "pointer",
+    justifySelf: "center",
+  },
+  input: {
+    width: "100%",
+    border: "1px solid #cbd5e1",
+    borderRadius: 16,
+    padding: "12px 14px",
+    fontSize: 15,
+    color: "#0f172a",
+    background: "#ffffff",
+    boxSizing: "border-box",
+  },
+  filterRowWrap: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  chip: {
+    padding: "10px 14px",
+    borderRadius: 999,
+    background: "#e2e8f0",
+    border: "none",
+    fontWeight: 600,
+    cursor: "pointer",
+    textTransform: "capitalize",
+  },
+  chipActive: {
+    background: "#0f172a",
+    color: "#ffffff",
+  },
+  badge: {
+    padding: "8px 12px",
+    borderRadius: 999,
+    background: "#eef2ff",
+    color: "#1e293b",
+    fontSize: 12,
+    fontWeight: 600,
+    textTransform: "capitalize",
+  },
+  badgeActive: {
+    background: "#dbeafe",
+    color: "#1d4ed8",
+  },
+  rowBetween: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  pillRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  infoGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr",
+    gap: 10,
+  },
+  infoBox: {
+    border: "1px solid #e2e8f0",
+    borderRadius: 16,
+    padding: 12,
+  },
+  infoLabel: {
+    fontSize: 12,
+    color: "#64748b",
+    marginBottom: 6,
+  },
+  infoValue: {
+    fontSize: 15,
+    fontWeight: 700,
+  },
+  howToBox: {
+    border: "1px solid #e2e8f0",
+    borderRadius: 16,
+    padding: 12,
+    background: "#f8fafc",
+  },
+  howToTitle: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: "#0f172a",
+    marginBottom: 8,
+  },
+  howToList: {
+    margin: 0,
+    paddingLeft: 18,
+    display: "grid",
+    gap: 6,
+    color: "#334155",
+    fontSize: 14,
+    lineHeight: 1.45,
+  },
+  howToItem: {
+    paddingLeft: 2,
+  },
+  weekGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: 8,
+  },
+  dayBox: {
+    border: "1px solid #cbd5e1",
+    borderRadius: 18,
+    padding: "16px 10px",
+    background: "#ffffff",
+    textAlign: "center",
+    cursor: "pointer",
+  },
+  dayBoxDone: {
+    background: "#0f172a",
+    border: "1px solid #0f172a",
+  },
+  dayText: {
+    color: "#0f172a",
+    fontWeight: 700,
+  },
+  daySubtext: {
+    color: "#64748b",
+    fontSize: 12,
+    marginTop: 4,
+  },
+  dayTextDone: {
+    color: "#ffffff",
+  },
+  historyRow: {
+    border: "1px solid #e2e8f0",
+    borderRadius: 16,
+    padding: 12,
+  },
+  tabBar: {
+    position: "absolute",
+    left: 12,
+    right: 12,
+    bottom: 14,
+    background: "#ffffff",
+    borderRadius: 24,
+    border: "1px solid #e2e8f0",
+    padding: 6,
+    display: "grid",
+    gridTemplateColumns: "repeat(5, 1fr)",
+    gap: 4,
+  },
+  tabItem: {
+    border: "none",
+    background: "transparent",
+    padding: "10px 4px",
+    color: "#64748b",
+    fontWeight: 600,
+    fontSize: 12,
+    borderRadius: 16,
+    cursor: "pointer",
+  },
+  tabItemActive: {
+    color: "#0f172a",
+    background: "#f1f5f9",
+    fontWeight: 800,
+  },
 };
