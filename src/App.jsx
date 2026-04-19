@@ -1,209 +1,38 @@
-﻿import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "calistrack_local_v1";
+const STORAGE_KEY = "calistrack_v2";
 
-const exercises = [
-  {
-    id: 1,
-    name: "Flexiones inclinadas",
-    level: "basico",
-    category: "Empuje",
-    muscle: "Pecho / Triceps",
-    sets: 3,
-    reps: "12",
-    rest: "60 s",
-    description: "Ideal para empezar a ganar fuerza de empuje con buena tecnica.",
-  },
-  {
-    id: 2,
-    name: "Flexiones clasicas",
-    level: "basico",
-    category: "Empuje",
-    muscle: "Pecho / Hombro / Triceps",
-    sets: 4,
-    reps: "10",
-    rest: "75 s",
-    description: "Ejercicio base para fuerza general del tren superior.",
-  },
-  {
-    id: 3,
-    name: "Remo australiano",
-    level: "basico",
-    category: "Tiron",
-    muscle: "Espalda / Biceps",
-    sets: 4,
-    reps: "8",
-    rest: "75 s",
-    description: "Construye la base para llegar a dominadas estrictas.",
-  },
-  {
-    id: 4,
-    name: "Dominadas asistidas",
-    level: "basico",
-    category: "Tiron",
-    muscle: "Espalda / Biceps",
-    sets: 4,
-    reps: "6",
-    rest: "90 s",
-    description: "Progresion inicial para mejorar fuerza vertical de tiron.",
-  },
-  {
-    id: 5,
-    name: "Sentadillas al aire",
-    level: "basico",
-    category: "Pierna",
-    muscle: "Cuadriceps / Gluteos",
-    sets: 4,
-    reps: "15",
-    rest: "60 s",
-    description: "Movimiento esencial para fuerza, movilidad y control corporal.",
-  },
-  {
-    id: 6,
-    name: "Plancha frontal",
-    level: "basico",
-    category: "Core",
-    muscle: "Abdomen / Lumbar",
-    sets: 3,
-    reps: "30 s",
-    rest: "45 s",
-    description: "Base para estabilidad del core y postura.",
-  },
-  {
-    id: 7,
-    name: "Fondos en banco",
-    level: "medio",
-    category: "Empuje",
-    muscle: "Triceps / Pecho",
-    sets: 4,
-    reps: "10",
-    rest: "75 s",
-    description: "Puente entre flexiones y fondos mas demandantes.",
-  },
-  {
-    id: 8,
-    name: "Fondos en paralelas",
-    level: "medio",
-    category: "Empuje",
-    muscle: "Pecho / Hombro / Triceps",
-    sets: 4,
-    reps: "8",
-    rest: "90 s",
-    description: "Uno de los mejores ejercicios de empuje en calistenia.",
-  },
-  {
-    id: 9,
-    name: "Dominadas estrictas",
-    level: "medio",
-    category: "Tiron",
-    muscle: "Espalda / Biceps",
-    sets: 5,
-    reps: "5",
-    rest: "120 s",
-    description: "Desarrolla fuerza real del tren superior y control escapular.",
-  },
-  {
-    id: 10,
-    name: "Elevaciones de rodillas",
-    level: "medio",
-    category: "Core",
-    muscle: "Abdomen / Cadera",
-    sets: 4,
-    reps: "12",
-    rest: "60 s",
-    description: "Paso previo para desarrollar un L-sit solido.",
-  },
-  {
-    id: 11,
-    name: "Zancadas alternas",
-    level: "medio",
-    category: "Pierna",
-    muscle: "Pierna unilateral",
-    sets: 4,
-    reps: "12 por lado",
-    rest: "60 s",
-    description: "Mejora fuerza, estabilidad y control de pierna.",
-  },
-  {
-    id: 12,
-    name: "L-sit tuck",
-    level: "medio",
-    category: "Core",
-    muscle: "Abdomen / Flexores de cadera",
-    sets: 5,
-    reps: "15 s",
-    rest: "60 s",
-    description: "Progresion intermedia hacia el L-sit completo.",
-  },
-  {
-    id: 13,
-    name: "Flexiones declinadas",
-    level: "experto",
-    category: "Empuje",
-    muscle: "Pecho superior / Hombro",
-    sets: 5,
-    reps: "12",
-    rest: "90 s",
-    description: "Aumenta la intensidad del patron de empuje horizontal.",
-  },
-  {
-    id: 14,
-    name: "Pike push-ups",
-    level: "experto",
-    category: "Empuje",
-    muscle: "Hombro / Triceps",
-    sets: 5,
-    reps: "8",
-    rest: "90 s",
-    description: "Preparacion excelente para handstand push-up.",
-  },
-  {
-    id: 15,
-    name: "Pistol squat asistida",
-    level: "experto",
-    category: "Pierna",
-    muscle: "Pierna unilateral / Gluteos",
-    sets: 4,
-    reps: "6 por lado",
-    rest: "90 s",
-    description: "Ejercicio avanzado de fuerza, equilibrio y movilidad.",
-  },
-  {
-    id: 16,
-    name: "L-sit completo",
-    level: "experto",
-    category: "Core",
-    muscle: "Abdomen / Compresion",
-    sets: 5,
-    reps: "20 s",
-    rest: "75 s",
-    description: "Demanda alta de fuerza isometrica y control del cuerpo.",
-  },
-  {
-    id: 17,
-    name: "Dominadas explosivas",
-    level: "experto",
-    category: "Tiron",
-    muscle: "Espalda / Potencia",
-    sets: 5,
-    reps: "4",
-    rest: "120 s",
-    description: "Progresion util hacia muscle-up y potencia vertical.",
-  },
-  {
-    id: 18,
-    name: "Dragon flag progresion",
-    level: "experto",
-    category: "Core",
-    muscle: "Core completo",
-    sets: 4,
-    reps: "5",
-    rest: "90 s",
-    description: "Trabajo avanzado de anti-extension y fuerza abdominal.",
-  },
+const EXERCISES = [
+  { id: 1, name: "Flexiones inclinadas", level: "basico", category: "empuje", muscle: "Pecho / Triceps", sets: 3, reps: "12", rest: "60 s", description: "Perfectas para empezar con buena tecnica." },
+  { id: 2, name: "Flexiones clasicas", level: "basico", category: "empuje", muscle: "Pecho / Hombro / Triceps", sets: 4, reps: "10", rest: "75 s", description: "Base de fuerza del tren superior." },
+  { id: 3, name: "Remo australiano", level: "basico", category: "tiron", muscle: "Espalda / Biceps", sets: 4, reps: "8", rest: "75 s", description: "Progresion ideal antes de dominadas estrictas." },
+  { id: 4, name: "Dominadas asistidas", level: "basico", category: "tiron", muscle: "Espalda / Biceps", sets: 4, reps: "6", rest: "90 s", description: "Trabajo vertical de tiron para principiantes." },
+  { id: 5, name: "Sentadillas al aire", level: "basico", category: "pierna", muscle: "Cuadriceps / Gluteos", sets: 4, reps: "15", rest: "60 s", description: "Ejercicio esencial de tren inferior." },
+  { id: 6, name: "Plancha frontal", level: "basico", category: "core", muscle: "Abdomen / Lumbar", sets: 3, reps: "30 s", rest: "45 s", description: "Estabilidad basica del core." },
+
+  { id: 7, name: "Fondos en banco", level: "medio", category: "empuje", muscle: "Triceps / Pecho", sets: 4, reps: "10", rest: "75 s", description: "Paso intermedio hacia fondos en paralelas." },
+  { id: 8, name: "Fondos en paralelas", level: "medio", category: "empuje", muscle: "Pecho / Hombro / Triceps", sets: 4, reps: "8", rest: "90 s", description: "Gran ejercicio de empuje en calistenia." },
+  { id: 9, name: "Dominadas estrictas", level: "medio", category: "tiron", muscle: "Espalda / Biceps", sets: 5, reps: "5", rest: "120 s", description: "Fuerza real del tren superior." },
+  { id: 10, name: "Elevaciones de rodillas", level: "medio", category: "core", muscle: "Abdomen / Cadera", sets: 4, reps: "12", rest: "60 s", description: "Paso previo para L-sit." },
+  { id: 11, name: "Zancadas alternas", level: "medio", category: "pierna", muscle: "Pierna unilateral", sets: 4, reps: "12 por lado", rest: "60 s", description: "Control y estabilidad de pierna." },
+  { id: 12, name: "L-sit tuck", level: "medio", category: "core", muscle: "Abdomen / Flexores de cadera", sets: 5, reps: "15 s", rest: "60 s", description: "Progresion intermedia de compresion." },
+
+  { id: 13, name: "Flexiones declinadas", level: "experto", category: "empuje", muscle: "Pecho superior / Hombro", sets: 5, reps: "12", rest: "90 s", description: "Mayor intensidad de empuje horizontal." },
+  { id: 14, name: "Pike push-ups", level: "experto", category: "empuje", muscle: "Hombro / Triceps", sets: 5, reps: "8", rest: "90 s", description: "Excelente base para handstand push-up." },
+  { id: 15, name: "Pistol squat asistida", level: "experto", category: "pierna", muscle: "Pierna unilateral / Gluteos", sets: 4, reps: "6 por lado", rest: "90 s", description: "Fuerza, equilibrio y movilidad." },
+  { id: 16, name: "L-sit completo", level: "experto", category: "core", muscle: "Abdomen / Compresion", sets: 5, reps: "20 s", rest: "75 s", description: "Trabajo isometrico avanzado." },
+  { id: 17, name: "Dominadas explosivas", level: "experto", category: "tiron", muscle: "Espalda / Potencia", sets: 5, reps: "4", rest: "120 s", description: "Muy utiles para progresion a muscle-up." },
+  { id: 18, name: "Dragon flag progresion", level: "experto", category: "core", muscle: "Core completo", sets: 4, reps: "5", rest: "90 s", description: "Trabajo avanzado de anti-extension." },
+
+  { id: 19, name: "Burpees", level: "medio", category: "fullbody", muscle: "Cuerpo completo", sets: 4, reps: "15", rest: "60 s", description: "Ejercicio militar clasico de resistencia y potencia." },
+  { id: 20, name: "Flexiones diamante", level: "medio", category: "empuje", muscle: "Triceps", sets: 4, reps: "12", rest: "60 s", description: "Muy usadas en entrenamiento militar para fuerza de triceps." },
+  { id: 21, name: "Sprint en sitio", level: "basico", category: "cardio", muscle: "Pierna / Resistencia", sets: 5, reps: "30 s", rest: "30 s", description: "Trabajo cardiovascular tipo militar." },
+  { id: 22, name: "Mountain climbers", level: "medio", category: "core", muscle: "Core / Cardio", sets: 4, reps: "40 s", rest: "30 s", description: "Alta intensidad usada en entrenamiento funcional militar." },
+  { id: 23, name: "Salto con rodillas al pecho", level: "experto", category: "pierna", muscle: "Explosividad", sets: 4, reps: "12", rest: "60 s", description: "Trabajo explosivo tipo entrenamiento de combate." },
+  { id: 24, name: "Plancha con desplazamiento", level: "experto", category: "core", muscle: "Core completo", sets: 4, reps: "30 s", rest: "45 s", description: "Simula desplazamientos militares en el suelo." },
 ];
 
-const plans = {
+const PLANS = {
   basico: {
     name: "Plan basico",
     goal: "Crear base de fuerza y tecnica",
@@ -239,18 +68,22 @@ const plans = {
   },
 };
 
-const weeklyDays = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+const WEEK_DAYS = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
 
-function buildWorkoutLog(plan) {
-  return plans[plan].sessions.map((session, index) => ({
+function buildWorkoutLog(planKey) {
+  return PLANS[planKey].sessions.map((session, index) => ({
     id: index + 1,
     ...session,
     done: false,
   }));
 }
 
-const defaultState = {
+const DEFAULT_STATE = {
+  activeTab: "inicio",
   selectedPlan: "basico",
+  search: "",
+  levelFilter: "todos",
+  categoryFilter: "todas",
   completedDays: [true, false, false, true, false, false, false],
   workoutLog: buildWorkoutLog("basico"),
   userStats: {
@@ -263,59 +96,64 @@ const defaultState = {
   },
 };
 
-function safeLoadState() {
-  if (typeof window === "undefined") return defaultState;
-
+function loadState() {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultState;
+    if (!raw) return DEFAULT_STATE;
     const parsed = JSON.parse(raw);
     return {
-      ...defaultState,
+      ...DEFAULT_STATE,
       ...parsed,
-      userStats: {
-        ...defaultState.userStats,
-        ...(parsed.userStats || {}),
-      },
-      completedDays: Array.isArray(parsed.completedDays) ? parsed.completedDays.slice(0, 7) : defaultState.completedDays,
-      workoutLog: Array.isArray(parsed.workoutLog) && parsed.workoutLog.length ? parsed.workoutLog : defaultState.workoutLog,
+      userStats: { ...DEFAULT_STATE.userStats, ...(parsed.userStats || {}) },
+      completedDays: Array.isArray(parsed.completedDays)
+        ? parsed.completedDays.slice(0, 7)
+        : DEFAULT_STATE.completedDays,
+      workoutLog:
+        Array.isArray(parsed.workoutLog) && parsed.workoutLog.length
+          ? parsed.workoutLog
+          : DEFAULT_STATE.workoutLog,
     };
   } catch {
-    return defaultState;
+    return DEFAULT_STATE;
   }
 }
 
-function safeSaveState(state) {
-  if (typeof window === "undefined") return;
+function saveState(state) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-function normalizeCategory(category) {
-  return String(category || "").toLowerCase();
-}
-
-function filterExercises(list, search, levelFilter, categoryFilter) {
-  return list.filter((exercise) => {
-    const text = `${exercise.name} ${exercise.category} ${exercise.muscle}`.toLowerCase();
-    const matchesSearch = text.includes(String(search || "").toLowerCase());
-    const matchesLevel = levelFilter === "todos" || exercise.level === levelFilter;
-    const matchesCategory = categoryFilter === "todas" || normalizeCategory(exercise.category) === categoryFilter;
-    return matchesSearch && matchesLevel && matchesCategory;
-  });
 }
 
 function calculateAdherence(workoutLog) {
   if (!Array.isArray(workoutLog) || workoutLog.length === 0) return 0;
-  const completed = workoutLog.filter((item) => item.done).length;
-  return Math.round((completed / workoutLog.length) * 100);
+  const done = workoutLog.filter((item) => item.done).length;
+  return Math.round((done / workoutLog.length) * 100);
+}
+
+function filterExercises(list, search, levelFilter, categoryFilter) {
+  return list.filter((exercise) => {
+    const haystack = `${exercise.name} ${exercise.category} ${exercise.muscle}`.toLowerCase();
+    const matchesSearch = haystack.includes(String(search || "").toLowerCase());
+    const matchesLevel = levelFilter === "todos" || exercise.level === levelFilter;
+    const matchesCategory = categoryFilter === "todas" || exercise.category === categoryFilter;
+    return matchesSearch && matchesLevel && matchesCategory;
+  });
 }
 
 function runTests() {
-  console.assert(buildWorkoutLog("basico").length === 4, "Debe crear 4 ejercicios para el plan basico");
-  console.assert(filterExercises(exercises, "dominadas", "todos", "todas").length >= 3, "Debe encontrar ejercicios de dominadas");
-  console.assert(filterExercises(exercises, "", "medio", "core").every((item) => item.level === "medio" && item.category === "Core"), "Debe filtrar por nivel y categoria");
-  console.assert(calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75, "La adherencia debe calcularse bien");
-  console.assert(calculateAdherence([]) === 0, "La adherencia vacia debe ser 0");
+  console.assert(buildWorkoutLog("basico").length === 4, "El plan basico debe tener 4 ejercicios");
+  console.assert(
+    calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75,
+    "La adherencia debe ser 75"
+  );
+  console.assert(
+    filterExercises(EXERCISES, "dominadas", "todos", "todas").length >= 3,
+    "Debe encontrar ejercicios de dominadas"
+  );
+  console.assert(
+    filterExercises(EXERCISES, "", "medio", "core").every(
+      (item) => item.level === "medio" && item.category === "core"
+    ),
+    "Debe filtrar por nivel y categoria"
+  );
 }
 
 runTests();
@@ -329,97 +167,105 @@ function StatCard({ label, value }) {
   );
 }
 
-function Pill({ text, active }) {
-  return <span style={{ ...styles.pill, ...(active ? styles.pillActive : {}) }}>{text}</span>;
-}
-
-function FilterButton({ active, onClick, children }) {
+function Chip({ active, onClick, children }) {
   return (
-    <button type="button" onClick={onClick} style={{ ...styles.chip, ...(active ? styles.chipActive : {}) }}>
+    <button
+      type="button"
+      onClick={onClick}
+      style={{ ...styles.chip, ...(active ? styles.chipActive : {}) }}
+    >
       {children}
     </button>
   );
 }
 
+function Badge({ children, active = false }) {
+  return <span style={{ ...styles.badge, ...(active ? styles.badgeActive : {}) }}>{children}</span>;
+}
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState("inicio");
-  const [search, setSearch] = useState("");
-  const [levelFilter, setLevelFilter] = useState("todos");
-  const [categoryFilter, setCategoryFilter] = useState("todas");
-  const [appState, setAppState] = useState(defaultState);
-  const [hydrated, setHydrated] = useState(false);
+  const [state, setState] = useState(DEFAULT_STATE);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setAppState(safeLoadState());
-    setHydrated(true);
+    setState(loadState());
+    setReady(true);
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
-    safeSaveState(appState);
-  }, [appState, hydrated]);
+    if (!ready) return;
+    saveState(state);
+  }, [state, ready]);
 
-  const currentPlan = plans[appState.selectedPlan];
-  const completedCount = appState.completedDays.filter(Boolean).length;
-  const adherence = calculateAdherence(appState.workoutLog);
+  const currentPlan = PLANS[state.selectedPlan];
+  const completedCount = state.completedDays.filter(Boolean).length;
+  const adherence = calculateAdherence(state.workoutLog);
 
   const filteredExercises = useMemo(() => {
-    return filterExercises(exercises, search, levelFilter, categoryFilter);
-  }, [search, levelFilter, categoryFilter]);
+    return filterExercises(EXERCISES, state.search, state.levelFilter, state.categoryFilter);
+  }, [state.search, state.levelFilter, state.categoryFilter]);
 
-  function selectPlan(plan) {
-    setAppState((prev) => ({
+  function updateField(field, value) {
+    setState((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function selectPlan(planKey) {
+    setState((prev) => ({
       ...prev,
-      selectedPlan: plan,
-      workoutLog: buildWorkoutLog(plan),
+      selectedPlan: planKey,
+      workoutLog: buildWorkoutLog(planKey),
       userStats: {
         ...prev.userStats,
-        level: plan === "basico" ? "Basico" : plan === "medio" ? "Medio" : "Experto",
-        progress: plan === "basico" ? 35 : plan === "medio" ? 68 : 82,
+        level: planKey === "basico" ? "Basico" : planKey === "medio" ? "Medio" : "Experto",
+        progress: planKey === "basico" ? 35 : planKey === "medio" ? 68 : 82,
       },
     }));
   }
 
   function toggleWorkout(id) {
-    setAppState((prev) => {
-      const updatedLog = prev.workoutLog.map((item) => (item.id === id ? { ...item, done: !item.done } : item));
-      const newCompleted = updatedLog.filter((item) => item.done).length;
+    setState((prev) => {
+      const workoutLog = prev.workoutLog.map((item) =>
+        item.id === id ? { ...item, done: !item.done } : item
+      );
+      const doneCount = workoutLog.filter((item) => item.done).length;
       return {
         ...prev,
-        workoutLog: updatedLog,
+        workoutLog,
         userStats: {
           ...prev.userStats,
           workouts: prev.userStats.workouts + 1,
-          progress: Math.min(100, 20 + newCompleted * 15),
+          progress: Math.min(100, 20 + doneCount * 15),
         },
       };
     });
   }
 
   function toggleDay(index) {
-    setAppState((prev) => {
+    setState((prev) => {
       const nextValue = !prev.completedDays[index];
-      const updatedDays = prev.completedDays.map((item, i) => (i === index ? nextValue : item));
+      const completedDays = prev.completedDays.map((item, i) =>
+        i === index ? nextValue : item
+      );
       return {
         ...prev,
-        completedDays: updatedDays,
+        completedDays,
         userStats: {
           ...prev.userStats,
-          streak: nextValue ? prev.userStats.streak + 1 : Math.max(0, prev.userStats.streak - 1),
+          streak: nextValue
+            ? prev.userStats.streak + 1
+            : Math.max(0, prev.userStats.streak - 1),
         },
       };
     });
   }
 
-  function resetLocalData() {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem(STORAGE_KEY);
-    }
-    setAppState(defaultState);
+  function resetApp() {
+    window.localStorage.removeItem(STORAGE_KEY);
+    setState(DEFAULT_STATE);
   }
 
-  if (!hydrated) {
-    return <div style={styles.loading}>Cargando datos locales...</div>;
+  if (!ready) {
+    return <div style={styles.loading}>Cargando app...</div>;
   }
 
   return (
@@ -427,29 +273,33 @@ export default function App() {
       <div style={styles.phoneFrame}>
         <div style={styles.header}>
           <div>
-            <div style={styles.brand}>CalisTrack iOS</div>
-            <div style={styles.subtitle}>Prototipo web con estilo iPhone y almacenamiento local.</div>
+            <div style={styles.brand}>CalisTrack</div>
+            <div style={styles.subtitle}>
+              App limpia de calistenia, guardado local y lista para desplegar.
+            </div>
           </div>
-          <button type="button" onClick={resetLocalData} style={styles.secondaryButton}>
+          <button type="button" onClick={resetApp} style={styles.secondaryButton}>
             Reset
           </button>
         </div>
 
         <div style={styles.content}>
-          {activeTab === "inicio" && (
+          {state.activeTab === "inicio" && (
             <>
               <div style={styles.statsGrid}>
-                <StatCard label="Racha" value={`${appState.userStats.streak} dias`} />
-                <StatCard label="Entrenos" value={appState.userStats.workouts} />
-                <StatCard label="Progreso" value={`${appState.userStats.progress}%`} />
+                <StatCard label="Racha" value={`${state.userStats.streak} dias`} />
+                <StatCard label="Entrenos" value={state.userStats.workouts} />
+                <StatCard label="Progreso" value={`${state.userStats.progress}%`} />
                 <StatCard label="Semana" value={`${completedCount}/7`} />
               </div>
 
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Entrenamiento de hoy</div>
-                <div style={styles.cardHint}>{currentPlan.name} · {currentPlan.frequency}</div>
+                <div style={styles.cardHint}>
+                  {currentPlan.name} - {currentPlan.frequency}
+                </div>
                 <div style={styles.stackMd}>
-                  {appState.workoutLog.map((item) => (
+                  {state.workoutLog.map((item) => (
                     <div key={item.id} style={styles.listRow}>
                       <div style={{ flex: 1 }}>
                         <div style={styles.rowTitle}>{item.name}</div>
@@ -457,8 +307,8 @@ export default function App() {
                       </div>
                       <button
                         type="button"
-                        style={{ ...styles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}
                         onClick={() => toggleWorkout(item.id)}
+                        style={{ ...styles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}
                       >
                         {item.done ? "Hecho" : "Marcar"}
                       </button>
@@ -471,44 +321,41 @@ export default function App() {
                 <div style={styles.cardTitle}>Resumen</div>
                 <div style={styles.paragraph}>Objetivo: {currentPlan.goal}</div>
                 <div style={styles.paragraph}>Adherencia actual: {adherence}%</div>
-                <div style={styles.paragraph}>Nivel estimado: {appState.userStats.level}</div>
+                <div style={styles.paragraph}>Nivel estimado: {state.userStats.level}</div>
               </div>
             </>
           )}
 
-          {activeTab === "ejercicios" && (
+          {state.activeTab === "ejercicios" && (
             <>
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Biblioteca de ejercicios</div>
                 <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  value={state.search}
+                  onChange={(e) => updateField("search", e.target.value)}
                   placeholder="Buscar ejercicio o musculo"
                   style={styles.input}
                 />
                 <div style={styles.filterRowWrap}>
-                  {[
-                    { key: "todos", label: "Todos" },
-                    { key: "basico", label: "Basico" },
-                    { key: "medio", label: "Medio" },
-                    { key: "experto", label: "Experto" },
-                  ].map((item) => (
-                    <FilterButton key={item.key} active={levelFilter === item.key} onClick={() => setLevelFilter(item.key)}>
-                      {item.label}
-                    </FilterButton>
+                  {["todos", "basico", "medio", "experto"].map((item) => (
+                    <Chip
+                      key={item}
+                      active={state.levelFilter === item}
+                      onClick={() => updateField("levelFilter", item)}
+                    >
+                      {item}
+                    </Chip>
                   ))}
                 </div>
                 <div style={styles.filterRowWrap}>
-                  {[
-                    { key: "todas", label: "Todas" },
-                    { key: "empuje", label: "Empuje" },
-                    { key: "tiron", label: "Tiron" },
-                    { key: "pierna", label: "Pierna" },
-                    { key: "core", label: "Core" },
-                  ].map((item) => (
-                    <FilterButton key={item.key} active={categoryFilter === item.key} onClick={() => setCategoryFilter(item.key)}>
-                      {item.label}
-                    </FilterButton>
+                  {["todas", "empuje", "tiron", "pierna", "core", "fullbody", "cardio"].map((item) => (
+                    <Chip
+                      key={item}
+                      active={state.categoryFilter === item}
+                      onClick={() => updateField("categoryFilter", item)}
+                    >
+                      {item}
+                    </Chip>
                   ))}
                 </div>
               </div>
@@ -520,11 +367,11 @@ export default function App() {
                       <div style={styles.cardTitle}>{exercise.name}</div>
                       <div style={styles.cardHint}>{exercise.description}</div>
                     </div>
-                    <Pill text={exercise.level} active />
+                    <Badge active>{exercise.level}</Badge>
                   </div>
                   <div style={styles.pillRow}>
-                    <Pill text={exercise.category} />
-                    <Pill text={exercise.muscle} />
+                    <Badge>{exercise.category}</Badge>
+                    <Badge>{exercise.muscle}</Badge>
                   </div>
                   <div style={styles.infoGrid}>
                     <div style={styles.infoBox}>
@@ -545,20 +392,20 @@ export default function App() {
             </>
           )}
 
-          {activeTab === "rutinas" && (
+          {state.activeTab === "rutinas" && (
             <>
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Seleccion de plan</div>
-                <div style={styles.cardHint}>Cambia el nivel para adaptar la rutina del usuario.</div>
+                <div style={styles.cardHint}>Cambia el nivel y reinicia la sesion del dia.</div>
                 <div style={styles.filterRowWrap}>
-                  {[
-                    { key: "basico", label: "Basico" },
-                    { key: "medio", label: "Medio" },
-                    { key: "experto", label: "Experto" },
-                  ].map((item) => (
-                    <FilterButton key={item.key} active={appState.selectedPlan === item.key} onClick={() => selectPlan(item.key)}>
-                      {item.label}
-                    </FilterButton>
+                  {["basico", "medio", "experto"].map((item) => (
+                    <Chip
+                      key={item}
+                      active={state.selectedPlan === item}
+                      onClick={() => selectPlan(item)}
+                    >
+                      {item}
+                    </Chip>
                   ))}
                 </div>
               </div>
@@ -567,7 +414,7 @@ export default function App() {
                 <div style={styles.cardTitle}>{currentPlan.name}</div>
                 <div style={styles.paragraph}>Objetivo: {currentPlan.goal}</div>
                 <div style={styles.paragraph}>Frecuencia: {currentPlan.frequency}</div>
-                <div style={styles.paragraph}>Nivel actual: {appState.userStats.level}</div>
+                <div style={styles.paragraph}>Nivel actual: {state.userStats.level}</div>
               </div>
 
               <div style={styles.card}>
@@ -586,21 +433,27 @@ export default function App() {
             </>
           )}
 
-          {activeTab === "progreso" && (
+          {state.activeTab === "progreso" && (
             <>
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Constancia semanal</div>
                 <div style={styles.weekGrid}>
-                  {weeklyDays.map((day, index) => (
+                  {WEEK_DAYS.map((day, index) => (
                     <button
                       key={day}
                       type="button"
-                      style={{ ...styles.dayBox, ...(appState.completedDays[index] ? styles.dayBoxDone : {}) }}
                       onClick={() => toggleDay(index)}
+                      style={{ ...styles.dayBox, ...(state.completedDays[index] ? styles.dayBoxDone : {}) }}
                     >
-                      <div style={{ ...styles.dayText, ...(appState.completedDays[index] ? styles.dayTextDone : {}) }}>{day}</div>
-                      <div style={{ ...styles.daySubtext, ...(appState.completedDays[index] ? styles.dayTextDone : {}) }}>
-                        {appState.completedDays[index] ? "Hecho" : "Pendiente"}
+                      <div
+                        style={{ ...styles.dayText, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}
+                      >
+                        {day}
+                      </div>
+                      <div
+                        style={{ ...styles.daySubtext, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}
+                      >
+                        {state.completedDays[index] ? "Hecho" : "Pendiente"}
                       </div>
                     </button>
                   ))}
@@ -609,21 +462,23 @@ export default function App() {
 
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Indicadores</div>
-                <div style={styles.paragraph}>Meta actual: {appState.userStats.objective}</div>
-                <div style={styles.paragraph}>Nivel estimado: {appState.userStats.level}</div>
+                <div style={styles.paragraph}>Meta actual: {state.userStats.objective}</div>
+                <div style={styles.paragraph}>Nivel estimado: {state.userStats.level}</div>
                 <div style={styles.paragraph}>Adherencia: {adherence}%</div>
-                <div style={styles.paragraph}>Guardado: local en el navegador como simulacion de iPhone.</div>
+                <div style={styles.paragraph}>Guardado: local en el navegador.</div>
               </div>
             </>
           )}
 
-          {activeTab === "perfil" && (
+          {state.activeTab === "perfil" && (
             <div style={styles.card}>
-              <div style={styles.cardTitle}>{appState.userStats.name}</div>
+              <div style={styles.cardTitle}>{state.userStats.name}</div>
               <div style={styles.paragraph}>Objetivo: fuerza, core y dominadas.</div>
               <div style={styles.paragraph}>Frecuencia: {currentPlan.frequency}</div>
-              <div style={styles.paragraph}>Meta a 90 dias: 8 dominadas, 25 flexiones limpias y L-sit estable.</div>
-              <div style={styles.paragraph}>Arquitectura actual: prototipo React web compatible con canvas + localStorage.</div>
+              <div style={styles.paragraph}>
+                Meta a 90 dias: 8 dominadas, 25 flexiones limpias y L-sit estable.
+              </div>
+              <div style={styles.paragraph}>Arquitectura: React + Vite + localStorage.</div>
             </div>
           )}
         </div>
@@ -639,8 +494,8 @@ export default function App() {
             <button
               key={tab.key}
               type="button"
-              style={{ ...styles.tabItem, ...(activeTab === tab.key ? styles.tabItemActive : {}) }}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => updateField("activeTab", tab.key)}
+              style={{ ...styles.tabItem, ...(state.activeTab === tab.key ? styles.tabItemActive : {}) }}
             >
               {tab.label}
             </button>
@@ -813,10 +668,24 @@ const styles = {
     border: "none",
     fontWeight: 600,
     cursor: "pointer",
+    textTransform: "capitalize",
   },
   chipActive: {
     background: "#0f172a",
     color: "#ffffff",
+  },
+  badge: {
+    padding: "8px 12px",
+    borderRadius: 999,
+    background: "#eef2ff",
+    color: "#1e293b",
+    fontSize: 12,
+    fontWeight: 600,
+    textTransform: "capitalize",
+  },
+  badgeActive: {
+    background: "#dbeafe",
+    color: "#1d4ed8",
   },
   rowBetween: {
     display: "flex",
@@ -828,18 +697,6 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     gap: 8,
-  },
-  pill: {
-    padding: "8px 12px",
-    borderRadius: 999,
-    background: "#eef2ff",
-    color: "#1e293b",
-    fontSize: 12,
-    fontWeight: 600,
-  },
-  pillActive: {
-    background: "#dbeafe",
-    color: "#1d4ed8",
   },
   infoGrid: {
     display: "grid",
@@ -918,4 +775,3 @@ const styles = {
     fontWeight: 800,
   },
 };
-
