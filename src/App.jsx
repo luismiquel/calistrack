@@ -1,42 +1,480 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "calistrack_v4";
+const STORAGE_KEY = "calistrack_v5";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
 const LEVELS = ["Basico", "Medio", "Experto"];
 
 const EXERCISES = [
-  { id: 1, name: "Flexiones inclinadas", level: "basico", category: "empuje", muscle: "Pecho / Triceps", sets: 3, reps: "12", rest: "60 s", mode: "calistenia", description: "Perfectas para empezar con buena tecnica.", howTo: ["Apoya las manos en una superficie elevada.", "Mantén el cuerpo recto de hombros a tobillos.", "Baja el pecho controlando el movimiento.", "Empuja hasta volver arriba sin arquear la espalda."] },
-  { id: 2, name: "Flexiones clasicas", level: "basico", category: "empuje", muscle: "Pecho / Hombro / Triceps", sets: 4, reps: "10", rest: "75 s", mode: "calistenia", description: "Base de fuerza del tren superior.", howTo: ["Coloca las manos un poco más abiertas que los hombros.", "Aprieta abdomen y glúteos para mantener el cuerpo recto.", "Desciende hasta que el pecho se acerque al suelo.", "Empuja fuerte hasta extender los brazos."] },
-  { id: 3, name: "Remo australiano", level: "basico", category: "tiron", muscle: "Espalda / Biceps", sets: 4, reps: "8", rest: "75 s", mode: "calistenia", description: "Progresion ideal antes de dominadas estrictas.", howTo: ["Agarra la barra con el cuerpo por debajo.", "Mantén talones apoyados y cuerpo en línea recta.", "Tira del pecho hacia la barra juntando escápulas.", "Baja de forma lenta y controlada."] },
-  { id: 4, name: "Dominadas asistidas", level: "basico", category: "tiron", muscle: "Espalda / Biceps", sets: 4, reps: "6", rest: "90 s", mode: "calistenia", description: "Trabajo vertical de tiron para principiantes.", howTo: ["Usa banda o apoyo para reducir carga.", "Agarra la barra con firmeza y activa hombros.", "Sube llevando el pecho hacia la barra.", "Desciende despacio hasta extensión casi completa."] },
-  { id: 5, name: "Sentadillas al aire", level: "basico", category: "pierna", muscle: "Cuadriceps / Gluteos", sets: 4, reps: "15", rest: "60 s", mode: "calistenia", description: "Ejercicio esencial de tren inferior.", howTo: ["Coloca los pies al ancho de hombros.", "Empuja la cadera hacia atrás al bajar.", "Mantén el pecho arriba y talones en el suelo.", "Sube extendiendo rodillas y cadera."] },
-  { id: 6, name: "Plancha frontal", level: "basico", category: "core", muscle: "Abdomen / Lumbar", sets: 3, reps: "30 s", rest: "45 s", mode: "calistenia", description: "Estabilidad basica del core.", howTo: ["Apoya antebrazos y puntas de los pies.", "Mantén hombros alineados con codos.", "Aprieta abdomen y glúteos.", "Evita hundir o elevar demasiado la cadera."] },
-  { id: 7, name: "Fondos en banco", level: "medio", category: "empuje", muscle: "Triceps / Pecho", sets: 4, reps: "10", rest: "75 s", mode: "calistenia", description: "Paso intermedio hacia fondos en paralelas.", howTo: ["Apoya las manos en el borde del banco.", "Extiende las piernas hacia delante.", "Baja flexionando codos cerca del cuerpo.", "Empuja hasta volver a la posición inicial."] },
-  { id: 8, name: "Fondos en paralelas", level: "medio", category: "empuje", muscle: "Pecho / Hombro / Triceps", sets: 4, reps: "8", rest: "90 s", mode: "calistenia", description: "Gran ejercicio de empuje en calistenia.", howTo: ["Sujeta las paralelas con brazos extendidos.", "Inclina ligeramente el torso hacia delante.", "Baja hasta sentir buen rango sin perder control.", "Empuja fuerte hasta bloqueo estable."] },
-  { id: 9, name: "Dominadas estrictas", level: "medio", category: "tiron", muscle: "Espalda / Biceps", sets: 5, reps: "5", rest: "120 s", mode: "calistenia", description: "Fuerza real del tren superior.", howTo: ["Cuelga con agarre firme y hombros activos.", "Inicia el tirón desde la espalda, no solo con brazos.", "Lleva el pecho hacia la barra.", "Baja controlando sin balancearte."] },
-  { id: 10, name: "Elevaciones de rodillas", level: "medio", category: "core", muscle: "Abdomen / Cadera", sets: 4, reps: "12", rest: "60 s", mode: "calistenia", description: "Paso previo para L-sit.", howTo: ["Cuelga de una barra o apóyate en paralelas.", "Sube las rodillas hacia el pecho.", "Evita impulsarte con balanceo.", "Baja despacio manteniendo el abdomen activo."] },
-  { id: 11, name: "Zancadas alternas", level: "medio", category: "pierna", muscle: "Pierna unilateral", sets: 4, reps: "12 por lado", rest: "60 s", mode: "calistenia", description: "Control y estabilidad de pierna.", howTo: ["Da un paso largo hacia delante.", "Baja ambas rodillas controladamente.", "Mantén torso erguido y abdomen firme.", "Empuja con la pierna delantera para volver."] },
-  { id: 12, name: "L-sit tuck", level: "medio", category: "core", muscle: "Abdomen / Flexores de cadera", sets: 5, reps: "15 s", rest: "60 s", mode: "calistenia", description: "Progresion intermedia de compresion.", howTo: ["Apóyate en paralelas o bloques.", "Eleva el cuerpo con hombros deprimidos.", "Lleva rodillas al pecho manteniendo pies fuera del suelo.", "Sostén sin redondear demasiado la espalda."] },
-  { id: 13, name: "Flexiones declinadas", level: "experto", category: "empuje", muscle: "Pecho superior / Hombro", sets: 5, reps: "12", rest: "90 s", mode: "calistenia", description: "Mayor intensidad de empuje horizontal.", howTo: ["Apoya los pies en una superficie elevada.", "Coloca las manos firmes en el suelo.", "Baja controlando el pecho hacia el suelo.", "Empuja sin perder alineación corporal."] },
-  { id: 14, name: "Pike push-ups", level: "experto", category: "empuje", muscle: "Hombro / Triceps", sets: 5, reps: "8", rest: "90 s", mode: "calistenia", description: "Excelente base para handstand push-up.", howTo: ["Coloca cadera alta formando una V invertida.", "Baja la cabeza entre las manos.", "Mantén codos orientados hacia atrás.", "Empuja hacia arriba llevando carga a hombros."] },
-  { id: 15, name: "Pistol squat asistida", level: "experto", category: "pierna", muscle: "Pierna unilateral / Gluteos", sets: 4, reps: "6 por lado", rest: "90 s", mode: "calistenia", description: "Fuerza, equilibrio y movilidad.", howTo: ["Sujétate a un apoyo ligero.", "Extiende una pierna al frente.", "Baja sobre la pierna de apoyo sin perder equilibrio.", "Sube empujando fuerte con el pie apoyado."] },
-  { id: 16, name: "L-sit completo", level: "experto", category: "core", muscle: "Abdomen / Compresion", sets: 5, reps: "20 s", rest: "75 s", mode: "calistenia", description: "Trabajo isometrico avanzado.", howTo: ["Empuja fuerte contra las paralelas.", "Eleva ambas piernas rectas al frente.", "Mantén rodillas extendidas y abdomen firme.", "Sostén sin dejar caer la cadera."] },
-  { id: 17, name: "Dominadas explosivas", level: "experto", category: "tiron", muscle: "Espalda / Potencia", sets: 5, reps: "4", rest: "120 s", mode: "calistenia", description: "Muy utiles para progresion a muscle-up.", howTo: ["Inicia desde colgado estable.", "Tira con máxima velocidad y potencia.", "Busca que el pecho suba lo más alto posible.", "Baja con control para repetir limpio."] },
-  { id: 18, name: "Dragon flag progresion", level: "experto", category: "core", muscle: "Core completo", sets: 4, reps: "5", rest: "90 s", mode: "calistenia", description: "Trabajo avanzado de anti-extension.", howTo: ["Apoya hombros en banco y sujeta un punto firme.", "Eleva el cuerpo en bloque.", "Desciende lentamente sin doblarte por la cadera.", "Vuelve arriba manteniendo tensión abdominal."] },
-  { id: 19, name: "Burpees", level: "medio", category: "fullbody", muscle: "Cuerpo completo", sets: 4, reps: "15", rest: "60 s", mode: "militar", description: "Ejercicio militar clasico de resistencia y potencia.", howTo: ["Desde pie, baja las manos al suelo.", "Lleva los pies atrás a posición de plancha.", "Vuelve con los pies hacia delante.", "Salta extendiendo el cuerpo arriba."] },
-  { id: 20, name: "Flexiones diamante", level: "medio", category: "empuje", muscle: "Triceps", sets: 4, reps: "12", rest: "60 s", mode: "militar", description: "Muy usadas en entrenamiento militar para fuerza de triceps.", howTo: ["Junta las manos formando un diamante.", "Mantén codos cerca del cuerpo.", "Baja controlando el pecho hacia las manos.", "Empuja fuerte hasta extensión completa."] },
-  { id: 21, name: "Sprint en sitio", level: "basico", category: "cardio", muscle: "Pierna / Resistencia", sets: 5, reps: "30 s", rest: "30 s", mode: "militar", description: "Trabajo cardiovascular tipo militar.", howTo: ["Corre en el mismo sitio a máxima intensidad.", "Eleva rodillas de forma activa.", "Mueve brazos con ritmo rápido.", "Mantén el tronco estable y respiración viva."] },
-  { id: 22, name: "Mountain climbers", level: "medio", category: "core", muscle: "Core / Cardio", sets: 4, reps: "40 s", rest: "30 s", mode: "militar", description: "Alta intensidad usada en entrenamiento funcional militar.", howTo: ["Colócate en plancha alta.", "Lleva una rodilla al pecho y alterna rápido.", "Mantén hombros sobre las manos.", "Evita mover demasiado la cadera."] },
-  { id: 23, name: "Salto con rodillas al pecho", level: "experto", category: "pierna", muscle: "Explosividad", sets: 4, reps: "12", rest: "60 s", mode: "militar", description: "Trabajo explosivo tipo entrenamiento de combate.", howTo: ["Parte de pie con rodillas ligeramente flexionadas.", "Salta lo más vertical posible.", "Lleva rodillas hacia el pecho en el aire.", "Aterriza suave y repite con control."] },
-  { id: 24, name: "Plancha con desplazamiento", level: "experto", category: "core", muscle: "Core completo", sets: 4, reps: "30 s", rest: "45 s", mode: "militar", description: "Simula desplazamientos militares en el suelo.", howTo: ["Adopta posición de plancha baja.", "Desplázate lateral o frontal manteniendo tensión.", "Mantén abdomen fuerte y cadera estable.", "Respira sin perder la postura."] },
+  {
+    id: 1,
+    name: "Flexiones inclinadas",
+    level: "basico",
+    category: "empuje",
+    muscle: "Pecho / Triceps",
+    sets: 3,
+    reps: "12",
+    rest: 60,
+    mode: "calistenia",
+    description: "Perfectas para empezar con buena tecnica.",
+    howTo: [
+      "Apoya las manos en una superficie elevada.",
+      "Mantén el cuerpo recto de hombros a tobillos.",
+      "Baja el pecho controlando el movimiento.",
+      "Empuja hasta volver arriba sin arquear la espalda.",
+    ],
+  },
+  {
+    id: 2,
+    name: "Flexiones clasicas",
+    level: "basico",
+    category: "empuje",
+    muscle: "Pecho / Hombro / Triceps",
+    sets: 4,
+    reps: "10",
+    rest: 75,
+    mode: "calistenia",
+    description: "Base de fuerza del tren superior.",
+    howTo: [
+      "Coloca las manos un poco más abiertas que los hombros.",
+      "Aprieta abdomen y glúteos para mantener el cuerpo recto.",
+      "Desciende hasta que el pecho se acerque al suelo.",
+      "Empuja fuerte hasta extender los brazos.",
+    ],
+  },
+  {
+    id: 3,
+    name: "Remo australiano",
+    level: "basico",
+    category: "tiron",
+    muscle: "Espalda / Biceps",
+    sets: 4,
+    reps: "8",
+    rest: 75,
+    mode: "calistenia",
+    description: "Progresion ideal antes de dominadas estrictas.",
+    howTo: [
+      "Agarra la barra con el cuerpo por debajo.",
+      "Mantén talones apoyados y cuerpo en línea recta.",
+      "Tira del pecho hacia la barra juntando escápulas.",
+      "Baja de forma lenta y controlada.",
+    ],
+  },
+  {
+    id: 4,
+    name: "Dominadas asistidas",
+    level: "basico",
+    category: "tiron",
+    muscle: "Espalda / Biceps",
+    sets: 4,
+    reps: "6",
+    rest: 90,
+    mode: "calistenia",
+    description: "Trabajo vertical de tiron para principiantes.",
+    howTo: [
+      "Usa banda o apoyo para reducir carga.",
+      "Agarra la barra con firmeza y activa hombros.",
+      "Sube llevando el pecho hacia la barra.",
+      "Desciende despacio hasta extensión casi completa.",
+    ],
+  },
+  {
+    id: 5,
+    name: "Sentadillas al aire",
+    level: "basico",
+    category: "pierna",
+    muscle: "Cuadriceps / Gluteos",
+    sets: 4,
+    reps: "15",
+    rest: 60,
+    mode: "calistenia",
+    description: "Ejercicio esencial de tren inferior.",
+    howTo: [
+      "Coloca los pies al ancho de hombros.",
+      "Empuja la cadera hacia atrás al bajar.",
+      "Mantén el pecho arriba y talones en el suelo.",
+      "Sube extendiendo rodillas y cadera.",
+    ],
+  },
+  {
+    id: 6,
+    name: "Plancha frontal",
+    level: "basico",
+    category: "core",
+    muscle: "Abdomen / Lumbar",
+    sets: 3,
+    reps: "30 s",
+    rest: 45,
+    mode: "calistenia",
+    description: "Estabilidad basica del core.",
+    howTo: [
+      "Apoya antebrazos y puntas de los pies.",
+      "Mantén hombros alineados con codos.",
+      "Aprieta abdomen y glúteos.",
+      "Evita hundir o elevar demasiado la cadera.",
+    ],
+  },
+  {
+    id: 7,
+    name: "Fondos en banco",
+    level: "medio",
+    category: "empuje",
+    muscle: "Triceps / Pecho",
+    sets: 4,
+    reps: "10",
+    rest: 75,
+    mode: "calistenia",
+    description: "Paso intermedio hacia fondos en paralelas.",
+    howTo: [
+      "Apoya las manos en el borde del banco.",
+      "Extiende las piernas hacia delante.",
+      "Baja flexionando codos cerca del cuerpo.",
+      "Empuja hasta volver a la posición inicial.",
+    ],
+  },
+  {
+    id: 8,
+    name: "Fondos en paralelas",
+    level: "medio",
+    category: "empuje",
+    muscle: "Pecho / Hombro / Triceps",
+    sets: 4,
+    reps: "8",
+    rest: 90,
+    mode: "calistenia",
+    description: "Gran ejercicio de empuje en calistenia.",
+    howTo: [
+      "Sujeta las paralelas con brazos extendidos.",
+      "Inclina ligeramente el torso hacia delante.",
+      "Baja hasta sentir buen rango sin perder control.",
+      "Empuja fuerte hasta bloqueo estable.",
+    ],
+  },
+  {
+    id: 9,
+    name: "Dominadas estrictas",
+    level: "medio",
+    category: "tiron",
+    muscle: "Espalda / Biceps",
+    sets: 5,
+    reps: "5",
+    rest: 120,
+    mode: "calistenia",
+    description: "Fuerza real del tren superior.",
+    howTo: [
+      "Cuelga con agarre firme y hombros activos.",
+      "Inicia el tirón desde la espalda, no solo con brazos.",
+      "Lleva el pecho hacia la barra.",
+      "Baja controlando sin balancearte.",
+    ],
+  },
+  {
+    id: 10,
+    name: "Elevaciones de rodillas",
+    level: "medio",
+    category: "core",
+    muscle: "Abdomen / Cadera",
+    sets: 4,
+    reps: "12",
+    rest: 60,
+    mode: "calistenia",
+    description: "Paso previo para L-sit.",
+    howTo: [
+      "Cuelga de una barra o apóyate en paralelas.",
+      "Sube las rodillas hacia el pecho.",
+      "Evita impulsarte con balanceo.",
+      "Baja despacio manteniendo el abdomen activo.",
+    ],
+  },
+  {
+    id: 11,
+    name: "Zancadas alternas",
+    level: "medio",
+    category: "pierna",
+    muscle: "Pierna unilateral",
+    sets: 4,
+    reps: "12 por lado",
+    rest: 60,
+    mode: "calistenia",
+    description: "Control y estabilidad de pierna.",
+    howTo: [
+      "Da un paso largo hacia delante.",
+      "Baja ambas rodillas controladamente.",
+      "Mantén torso erguido y abdomen firme.",
+      "Empuja con la pierna delantera para volver.",
+    ],
+  },
+  {
+    id: 12,
+    name: "L-sit tuck",
+    level: "medio",
+    category: "core",
+    muscle: "Abdomen / Flexores de cadera",
+    sets: 5,
+    reps: "15 s",
+    rest: 60,
+    mode: "calistenia",
+    description: "Progresion intermedia de compresion.",
+    howTo: [
+      "Apóyate en paralelas o bloques.",
+      "Eleva el cuerpo con hombros deprimidos.",
+      "Lleva rodillas al pecho manteniendo pies fuera del suelo.",
+      "Sostén sin redondear demasiado la espalda.",
+    ],
+  },
+  {
+    id: 13,
+    name: "Flexiones declinadas",
+    level: "experto",
+    category: "empuje",
+    muscle: "Pecho superior / Hombro",
+    sets: 5,
+    reps: "12",
+    rest: 90,
+    mode: "calistenia",
+    description: "Mayor intensidad de empuje horizontal.",
+    howTo: [
+      "Apoya los pies en una superficie elevada.",
+      "Coloca las manos firmes en el suelo.",
+      "Baja controlando el pecho hacia el suelo.",
+      "Empuja sin perder alineación corporal.",
+    ],
+  },
+  {
+    id: 14,
+    name: "Pike push-ups",
+    level: "experto",
+    category: "empuje",
+    muscle: "Hombro / Triceps",
+    sets: 5,
+    reps: "8",
+    rest: 90,
+    mode: "calistenia",
+    description: "Excelente base para handstand push-up.",
+    howTo: [
+      "Coloca cadera alta formando una V invertida.",
+      "Baja la cabeza entre las manos.",
+      "Mantén codos orientados hacia atrás.",
+      "Empuja hacia arriba llevando carga a hombros.",
+    ],
+  },
+  {
+    id: 15,
+    name: "Pistol squat asistida",
+    level: "experto",
+    category: "pierna",
+    muscle: "Pierna unilateral / Gluteos",
+    sets: 4,
+    reps: "6 por lado",
+    rest: 90,
+    mode: "calistenia",
+    description: "Fuerza, equilibrio y movilidad.",
+    howTo: [
+      "Sujétate a un apoyo ligero.",
+      "Extiende una pierna al frente.",
+      "Baja sobre la pierna de apoyo sin perder equilibrio.",
+      "Sube empujando fuerte con el pie apoyado.",
+    ],
+  },
+  {
+    id: 16,
+    name: "L-sit completo",
+    level: "experto",
+    category: "core",
+    muscle: "Abdomen / Compresion",
+    sets: 5,
+    reps: "20 s",
+    rest: 75,
+    mode: "calistenia",
+    description: "Trabajo isometrico avanzado.",
+    howTo: [
+      "Empuja fuerte contra las paralelas.",
+      "Eleva ambas piernas rectas al frente.",
+      "Mantén rodillas extendidas y abdomen firme.",
+      "Sostén sin dejar caer la cadera.",
+    ],
+  },
+  {
+    id: 17,
+    name: "Dominadas explosivas",
+    level: "experto",
+    category: "tiron",
+    muscle: "Espalda / Potencia",
+    sets: 5,
+    reps: "4",
+    rest: 120,
+    mode: "calistenia",
+    description: "Muy utiles para progresion a muscle-up.",
+    howTo: [
+      "Inicia desde colgado estable.",
+      "Tira con máxima velocidad y potencia.",
+      "Busca que el pecho suba lo más alto posible.",
+      "Baja con control para repetir limpio.",
+    ],
+  },
+  {
+    id: 18,
+    name: "Dragon flag progresion",
+    level: "experto",
+    category: "core",
+    muscle: "Core completo",
+    sets: 4,
+    reps: "5",
+    rest: 90,
+    mode: "calistenia",
+    description: "Trabajo avanzado de anti-extension.",
+    howTo: [
+      "Apoya hombros en banco y sujeta un punto firme.",
+      "Eleva el cuerpo en bloque.",
+      "Desciende lentamente sin doblarte por la cadera.",
+      "Vuelve arriba manteniendo tensión abdominal.",
+    ],
+  },
+  {
+    id: 19,
+    name: "Burpees",
+    level: "medio",
+    category: "fullbody",
+    muscle: "Cuerpo completo",
+    sets: 4,
+    reps: "15",
+    rest: 60,
+    mode: "militar",
+    description: "Ejercicio militar clasico de resistencia y potencia.",
+    howTo: [
+      "Desde pie, baja las manos al suelo.",
+      "Lleva los pies atrás a posición de plancha.",
+      "Vuelve con los pies hacia delante.",
+      "Salta extendiendo el cuerpo arriba.",
+    ],
+  },
+  {
+    id: 20,
+    name: "Flexiones diamante",
+    level: "medio",
+    category: "empuje",
+    muscle: "Triceps",
+    sets: 4,
+    reps: "12",
+    rest: 60,
+    mode: "militar",
+    description: "Muy usadas en entrenamiento militar para fuerza de triceps.",
+    howTo: [
+      "Junta las manos formando un diamante.",
+      "Mantén codos cerca del cuerpo.",
+      "Baja controlando el pecho hacia las manos.",
+      "Empuja fuerte hasta extensión completa.",
+    ],
+  },
+  {
+    id: 21,
+    name: "Sprint en sitio",
+    level: "basico",
+    category: "cardio",
+    muscle: "Pierna / Resistencia",
+    sets: 5,
+    reps: "30 s",
+    rest: 30,
+    mode: "militar",
+    description: "Trabajo cardiovascular tipo militar.",
+    howTo: [
+      "Corre en el mismo sitio a máxima intensidad.",
+      "Eleva rodillas de forma activa.",
+      "Mueve brazos con ritmo rápido.",
+      "Mantén el tronco estable y respiración viva.",
+    ],
+  },
+  {
+    id: 22,
+    name: "Mountain climbers",
+    level: "medio",
+    category: "core",
+    muscle: "Core / Cardio",
+    sets: 4,
+    reps: "40 s",
+    rest: 30,
+    mode: "militar",
+    description: "Alta intensidad usada en entrenamiento funcional militar.",
+    howTo: [
+      "Colócate en plancha alta.",
+      "Lleva una rodilla al pecho y alterna rápido.",
+      "Mantén hombros sobre las manos.",
+      "Evita mover demasiado la cadera.",
+    ],
+  },
+  {
+    id: 23,
+    name: "Salto con rodillas al pecho",
+    level: "experto",
+    category: "pierna",
+    muscle: "Explosividad",
+    sets: 4,
+    reps: "12",
+    rest: 60,
+    mode: "militar",
+    description: "Trabajo explosivo tipo entrenamiento de combate.",
+    howTo: [
+      "Parte de pie con rodillas ligeramente flexionadas.",
+      "Salta lo más vertical posible.",
+      "Lleva rodillas hacia el pecho en el aire.",
+      "Aterriza suave y repite con control.",
+    ],
+  },
+  {
+    id: 24,
+    name: "Plancha con desplazamiento",
+    level: "experto",
+    category: "core",
+    muscle: "Core completo",
+    sets: 4,
+    reps: "30 s",
+    rest: 45,
+    mode: "militar",
+    description: "Simula desplazamientos militares en el suelo.",
+    howTo: [
+      "Adopta posición de plancha baja.",
+      "Desplázate lateral o frontal manteniendo tensión.",
+      "Mantén abdomen fuerte y cadera estable.",
+      "Respira sin perder la postura.",
+    ],
+  },
 ];
 
 const WEEK_DAYS = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
 
 const PLANS = {
-  basico: { name: "Plan basico", goal: "Crear base de fuerza y tecnica", frequency: "3 dias por semana", sessions: [{ name: "Flexiones inclinadas", prescription: "3 x 12" }, { name: "Remo australiano", prescription: "4 x 8" }, { name: "Sentadillas al aire", prescription: "4 x 15" }, { name: "Plancha frontal", prescription: "3 x 30 s" }] },
-  medio: { name: "Plan medio", goal: "Subir fuerza y control corporal", frequency: "4 dias por semana", sessions: [{ name: "Flexiones clasicas", prescription: "4 x 10" }, { name: "Fondos en paralelas", prescription: "4 x 8" }, { name: "Dominadas estrictas", prescription: "5 x 5" }, { name: "Elevaciones de rodillas", prescription: "4 x 12" }] },
-  experto: { name: "Plan experto", goal: "Desarrollar fuerza avanzada y progresiones complejas", frequency: "5 dias por semana", sessions: [{ name: "Pike push-ups", prescription: "5 x 8" }, { name: "Dominadas explosivas", prescription: "5 x 4" }, { name: "Pistol squat asistida", prescription: "4 x 6 por lado" }, { name: "L-sit completo", prescription: "5 x 20 s" }] },
+  basico: {
+    name: "Plan basico",
+    goal: "Crear base de fuerza y tecnica",
+    frequency: "3 dias por semana",
+    sessions: [
+      { name: "Flexiones inclinadas", prescription: "3 x 12", rest: 60 },
+      { name: "Remo australiano", prescription: "4 x 8", rest: 75 },
+      { name: "Sentadillas al aire", prescription: "4 x 15", rest: 60 },
+      { name: "Plancha frontal", prescription: "3 x 30 s", rest: 45 },
+    ],
+  },
+  medio: {
+    name: "Plan medio",
+    goal: "Subir fuerza y control corporal",
+    frequency: "4 dias por semana",
+    sessions: [
+      { name: "Flexiones clasicas", prescription: "4 x 10", rest: 75 },
+      { name: "Fondos en paralelas", prescription: "4 x 8", rest: 90 },
+      { name: "Dominadas estrictas", prescription: "5 x 5", rest: 120 },
+      { name: "Elevaciones de rodillas", prescription: "4 x 12", rest: 60 },
+    ],
+  },
+  experto: {
+    name: "Plan experto",
+    goal: "Desarrollar fuerza avanzada y progresiones complejas",
+    frequency: "5 dias por semana",
+    sessions: [
+      { name: "Pike push-ups", prescription: "5 x 8", rest: 90 },
+      { name: "Dominadas explosivas", prescription: "5 x 4", rest: 120 },
+      { name: "Pistol squat asistida", prescription: "4 x 6 por lado", rest: 90 },
+      { name: "L-sit completo", prescription: "5 x 20 s", rest: 75 },
+    ],
+  },
 };
 
 function levelKeyFromUser(level) {
@@ -47,7 +485,11 @@ function levelKeyFromUser(level) {
 }
 
 function buildWorkoutLog(planKey) {
-  return PLANS[planKey].sessions.map((session, index) => ({ id: index + 1, ...session, done: false }));
+  return PLANS[planKey].sessions.map((session, index) => ({
+    id: index + 1,
+    ...session,
+    done: false,
+  }));
 }
 
 function buildAutoWorkout(mode, userLevel) {
@@ -69,6 +511,7 @@ function buildAutoWorkout(mode, userLevel) {
     id: index + 1,
     name: exercise.name,
     prescription: `${exercise.sets} x ${exercise.reps}`,
+    rest: exercise.rest,
     done: false,
   }));
 }
@@ -164,6 +607,8 @@ function Badge({ children, active = false }) {
 export default function App() {
   const [state, setState] = useState(DEFAULT_STATE);
   const [ready, setReady] = useState(false);
+  const [restTimer, setRestTimer] = useState(0);
+  const [activeRestId, setActiveRestId] = useState(null);
 
   useEffect(() => {
     setState(loadState());
@@ -174,6 +619,19 @@ export default function App() {
     if (!ready) return;
     saveState(state);
   }, [state, ready]);
+
+  useEffect(() => {
+    if (restTimer <= 0) {
+      setActiveRestId(null);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setRestTimer((current) => current - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [restTimer]);
 
   const currentPlan = PLANS[state.selectedPlan];
   const completedCount = state.completedDays.filter(Boolean).length;
@@ -234,6 +692,16 @@ export default function App() {
     });
   }
 
+  function startRest(seconds, id) {
+    setRestTimer(Number(seconds) || 0);
+    setActiveRestId(id);
+  }
+
+  function stopRest() {
+    setRestTimer(0);
+    setActiveRestId(null);
+  }
+
   function toggleDay(index) {
     setState((prev) => {
       const nextValue = !prev.completedDays[index];
@@ -252,6 +720,8 @@ export default function App() {
   function resetApp() {
     window.localStorage.removeItem(STORAGE_KEY);
     setState(DEFAULT_STATE);
+    setRestTimer(0);
+    setActiveRestId(null);
   }
 
   if (!ready) {
@@ -302,6 +772,14 @@ export default function App() {
                 <StatCard label="Semana" value={`${completedCount}/7`} />
               </div>
 
+              {restTimer > 0 && (
+                <div style={styles.timerBox}>
+                  <div style={styles.timerTitle}>Descanso activo</div>
+                  <div style={styles.timerValue}>{restTimer}s</div>
+                  <button type="button" onClick={stopRest} style={styles.stopRestButton}>Parar</button>
+                </div>
+              )}
+
               <div style={styles.card}>
                 <div style={styles.rowBetween}>
                   <div>
@@ -316,10 +794,23 @@ export default function App() {
                       <div style={{ flex: 1 }}>
                         <div style={styles.rowTitle}>{item.name}</div>
                         <div style={styles.rowHint}>{item.prescription}</div>
+                        <div style={styles.rowHint}>Descanso: {item.rest || 60}s</div>
                       </div>
-                      <button type="button" onClick={() => toggleWorkout(item.id)} style={{ ...styles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}>
-                        {item.done ? "Hecho" : "Marcar"}
-                      </button>
+                      <div style={styles.buttonColumn}>
+                        <button type="button" onClick={() => toggleWorkout(item.id)} style={{ ...styles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}>
+                          {item.done ? "Hecho" : "Marcar"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => startRest(item.rest || 60, item.id)}
+                          style={{
+                            ...styles.restButton,
+                            ...(activeRestId === item.id && restTimer > 0 ? styles.restButtonActive : {}),
+                          }}
+                        >
+                          {activeRestId === item.id && restTimer > 0 ? `Rest ${restTimer}s` : "Start Rest"}
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -369,7 +860,7 @@ export default function App() {
                   <div style={styles.infoGrid}>
                     <div style={styles.infoBox}><div style={styles.infoLabel}>Series</div><div style={styles.infoValue}>{exercise.sets}</div></div>
                     <div style={styles.infoBox}><div style={styles.infoLabel}>Reps</div><div style={styles.infoValue}>{exercise.reps}</div></div>
-                    <div style={styles.infoBox}><div style={styles.infoLabel}>Descanso</div><div style={styles.infoValue}>{exercise.rest}</div></div>
+                    <div style={styles.infoBox}><div style={styles.infoLabel}>Descanso</div><div style={styles.infoValue}>{exercise.rest}s</div></div>
                   </div>
                   <div style={styles.howToBox}>
                     <div style={styles.howToTitle}>Como se hace</div>
@@ -480,6 +971,13 @@ const styles = {
   rowHint: { fontSize: 13, color: "#64748b", marginTop: 3 },
   actionButton: { background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 14, padding: "10px 14px", fontWeight: 700, cursor: "pointer" },
   actionButtonDone: { background: "#0f172a", color: "#ffffff", border: "1px solid #0f172a" },
+  buttonColumn: { display: "grid", gap: 8 },
+  restButton: { background: "#e2e8f0", border: "none", borderRadius: 14, padding: "10px 14px", fontWeight: 700, cursor: "pointer" },
+  restButtonActive: { background: "#dbeafe", color: "#1d4ed8" },
+  timerBox: { background: "#0f172a", color: "#ffffff", borderRadius: 22, padding: 16, display: "grid", gap: 8, textAlign: "center" },
+  timerTitle: { fontSize: 14, fontWeight: 700, opacity: 0.9 },
+  timerValue: { fontSize: 28, fontWeight: 800 },
+  stopRestButton: { background: "#ffffff", color: "#0f172a", border: "none", borderRadius: 12, padding: "10px 14px", fontWeight: 700, cursor: "pointer", justifySelf: "center" },
   input: { width: "100%", border: "1px solid #cbd5e1", borderRadius: 16, padding: "12px 14px", fontSize: 15, color: "#0f172a", background: "#ffffff", boxSizing: "border-box" },
   filterRowWrap: { display: "flex", flexWrap: "wrap", gap: 8 },
   chip: { padding: "10px 14px", borderRadius: 999, background: "#e2e8f0", border: "none", fontWeight: 600, cursor: "pointer", textTransform: "capitalize" },
