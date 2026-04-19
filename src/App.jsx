@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 
 const STORAGE_KEY = "calistrack_v2";
 
@@ -264,6 +264,16 @@ export default function App() {
     setState(DEFAULT_STATE);
   }
 
+  function updateUserName(name) {
+    setState((prev) => ({
+      ...prev,
+      userStats: {
+        ...prev.userStats,
+        name,
+      },
+    }));
+  }
+
   if (!ready) {
     return <div style={styles.loading}>Cargando app...</div>;
   }
@@ -283,6 +293,18 @@ export default function App() {
           </button>
         </div>
 
+        <div style={styles.nameBar}>
+          <label htmlFor="user-name" style={styles.nameLabel}>Tu nombre</label>
+          <input
+            id="user-name"
+            type="text"
+            value={state.userStats.name}
+            onChange={(e) => updateUserName(e.target.value)}
+            placeholder="Escribe tu nombre"
+            style={styles.nameInput}
+          />
+        </div>
+
         <div style={styles.content}>
           {state.activeTab === "inicio" && (
             <>
@@ -294,10 +316,10 @@ export default function App() {
               </div>
 
               <div style={styles.card}>
-                <div style={styles.cardTitle}>Entrenamiento de hoy</div>
-                <div style={styles.cardHint}>
-                  {currentPlan.name} - {currentPlan.frequency}
+                <div style={styles.cardTitle}>
+                  Entrenamiento de hoy{state.userStats.name ? `, ${state.userStats.name}` : ""}
                 </div>
+                <div style={styles.cardHint}>{currentPlan.name} - {currentPlan.frequency}</div>
                 <div style={styles.stackMd}>
                   {state.workoutLog.map((item) => (
                     <div key={item.id} style={styles.listRow}>
@@ -472,7 +494,7 @@ export default function App() {
 
           {state.activeTab === "perfil" && (
             <div style={styles.card}>
-              <div style={styles.cardTitle}>{state.userStats.name}</div>
+              <div style={styles.cardTitle}>{state.userStats.name || "Tu perfil"}</div>
               <div style={styles.paragraph}>Objetivo: fuerza, core y dominadas.</div>
               <div style={styles.paragraph}>Frecuencia: {currentPlan.frequency}</div>
               <div style={styles.paragraph}>
@@ -562,6 +584,26 @@ const styles = {
     padding: "10px 14px",
     fontWeight: 700,
     cursor: "pointer",
+  },
+  nameBar: {
+    padding: "0 16px 8px 16px",
+    display: "grid",
+    gap: 8,
+  },
+  nameLabel: {
+    fontSize: 13,
+    fontWeight: 700,
+    color: "#334155",
+  },
+  nameInput: {
+    width: "100%",
+    border: "1px solid #cbd5e1",
+    borderRadius: 14,
+    padding: "12px 14px",
+    fontSize: 15,
+    color: "#0f172a",
+    background: "#ffffff",
+    boxSizing: "border-box",
   },
   content: {
     padding: 16,
