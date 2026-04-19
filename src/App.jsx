@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 
 const STORAGE_KEY = "calistrack_local_v1";
 
@@ -447,7 +447,7 @@ export default function App() {
 
               <div style={styles.card}>
                 <div style={styles.cardTitle}>Entrenamiento de hoy</div>
-                <div style={styles.cardHint}>{currentPlan.name} � {currentPlan.frequency}</div>
+                <div style={styles.cardHint}>{currentPlan.name} · {currentPlan.frequency}</div>
                 <div style={styles.stackMd}>
                   {appState.workoutLog.map((item) => (
                     <div key={item.id} style={styles.listRow}>
@@ -918,3 +918,4 @@ const styles = {
     fontWeight: 800,
   },
 };
+
