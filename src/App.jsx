@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "calistrack_v5";
+const STORAGE_KEY = "calistrack_v7";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
 const LEVELS = ["Basico", "Medio", "Experto"];
 
@@ -517,6 +517,7 @@ function buildAutoWorkout(mode, userLevel) {
 }
 
 const DEFAULT_STATE = {
+  theme: "light",
   activeTab: "inicio",
   selectedPlan: "basico",
   search: "",
@@ -525,6 +526,7 @@ const DEFAULT_STATE = {
   modeFilter: "mixto",
   completedDays: [true, false, false, true, false, false, false],
   workoutLog: buildWorkoutLog("basico"),
+  history: [],
   userStats: {
     streak: 2,
     workouts: 6,
@@ -546,6 +548,7 @@ function loadState() {
       userStats: { ...DEFAULT_STATE.userStats, ...(parsed.userStats || {}) },
       completedDays: Array.isArray(parsed.completedDays) ? parsed.completedDays.slice(0, 7) : DEFAULT_STATE.completedDays,
       workoutLog: Array.isArray(parsed.workoutLog) && parsed.workoutLog.length ? parsed.workoutLog : DEFAULT_STATE.workoutLog,
+      history: Array.isArray(parsed.history) ? parsed.history : DEFAULT_STATE.history,
     };
   } catch {
     return DEFAULT_STATE;
@@ -652,6 +655,13 @@ export default function App() {
     }));
   }
 
+  function toggleTheme() {
+    setState((prev) => ({
+      ...prev,
+      theme: prev.theme === "dark" ? "light" : "dark",
+    }));
+  }
+
   function selectPlan(planKey) {
     setState((prev) => ({
       ...prev,
@@ -717,6 +727,26 @@ export default function App() {
     });
   }
 
+  function saveWorkoutToHistory() {
+    setState((prev) => {
+      const completed = prev.workoutLog.filter((item) => item.done).length;
+      const newEntry = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        completed,
+        total: prev.workoutLog.length,
+        adherence: calculateAdherence(prev.workoutLog),
+        mode: prev.modeFilter,
+        level: prev.userStats.level,
+      };
+
+      return {
+        ...prev,
+        history: [newEntry, ...(prev.history || [])].slice(0, 20),
+      };
+    });
+  }
+
   function resetApp() {
     window.localStorage.removeItem(STORAGE_KEY);
     setState(DEFAULT_STATE);
@@ -728,35 +758,43 @@ export default function App() {
     return <div style={styles.loading}>Cargando app...</div>;
   }
 
+  const isDark = state.theme === "dark";
+  const themeStyles = isDark ? darkTheme : lightTheme;
+
   return (
-    <div style={styles.page}>
-      <div style={styles.phoneFrame}>
-        <div style={styles.header}>
+    <div style={{ ...styles.page, ...themeStyles.page }}>
+      <div style={{ ...styles.phoneFrame, ...themeStyles.phoneFrame }}>
+        <div style={{ ...styles.header, ...themeStyles.header }}>
           <div>
-            <div style={styles.brand}>CalisTrack</div>
-            <div style={styles.subtitle}>App de calistenia y militar con guardado local.</div>
+            <div style={{ ...styles.brand, ...themeStyles.textStrong }}>CalisTrack</div>
+            <div style={{ ...styles.subtitle, ...themeStyles.textMuted }}>App de calistenia y militar con guardado local.</div>
           </div>
-          <button type="button" onClick={resetApp} style={styles.secondaryButton}>Reset</button>
+          <div style={styles.headerButtons}>
+            <button type="button" onClick={toggleTheme} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>
+              {isDark ? "Modo blanco" : "Modo negro"}
+            </button>
+            <button type="button" onClick={resetApp} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>Reset</button>
+          </div>
         </div>
 
         <div style={styles.profileGrid}>
           <div style={styles.profileField}>
             <label htmlFor="user-name" style={styles.fieldLabel}>Tu nombre</label>
-            <input id="user-name" type="text" value={state.userStats.name} onChange={(e) => updateUser("name", e.target.value)} placeholder="Escribe tu nombre" style={styles.input} />
+            <input id="user-name" type="text" value={state.userStats.name} onChange={(e) => updateUser("name", e.target.value)} placeholder="Escribe tu nombre" style={{ ...styles.input, ...themeStyles.input }} />
           </div>
           <div style={styles.profileField}>
             <label htmlFor="user-objective" style={styles.fieldLabel}>Tu objetivo</label>
-            <input id="user-objective" type="text" value={state.userStats.objective} onChange={(e) => updateUser("objective", e.target.value)} placeholder="Ejemplo: 10 dominadas limpias" style={styles.input} />
+            <input id="user-objective" type="text" value={state.userStats.objective} onChange={(e) => updateUser("objective", e.target.value)} placeholder="Ejemplo: 10 dominadas limpias" style={{ ...styles.input, ...themeStyles.input }} />
           </div>
           <div style={styles.profileField}>
             <label htmlFor="user-level" style={styles.fieldLabel}>Nivel</label>
-            <select id="user-level" value={state.userStats.level} onChange={(e) => updateUser("level", e.target.value)} style={styles.input}>
+            <select id="user-level" value={state.userStats.level} onChange={(e) => updateUser("level", e.target.value)} style={{ ...styles.input, ...themeStyles.input }}>
               {LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
             </select>
           </div>
           <div style={styles.profileField}>
             <label htmlFor="mode-filter" style={styles.fieldLabel}>Modo de entrenamiento</label>
-            <select id="mode-filter" value={state.modeFilter} onChange={(e) => updateField("modeFilter", e.target.value)} style={styles.input}>
+            <select id="mode-filter" value={state.modeFilter} onChange={(e) => updateField("modeFilter", e.target.value)} style={{ ...styles.input, ...themeStyles.input }}>
               {TRAINING_MODES.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
             </select>
           </div>
@@ -773,31 +811,31 @@ export default function App() {
               </div>
 
               {restTimer > 0 && (
-                <div style={styles.timerBox}>
+                <div style={{ ...styles.timerBox, ...themeStyles.timerBox }}>
                   <div style={styles.timerTitle}>Descanso activo</div>
                   <div style={styles.timerValue}>{restTimer}s</div>
-                  <button type="button" onClick={stopRest} style={styles.stopRestButton}>Parar</button>
+                  <button type="button" onClick={stopRest} style={{ ...styles.stopRestButton, ...themeStyles.stopRestButton }}>Parar</button>
                 </div>
               )}
 
-              <div style={styles.card}>
+              <div style={{ ...styles.card, ...themeStyles.card }}>
                 <div style={styles.rowBetween}>
                   <div>
                     <div style={styles.cardTitle}>Entrenamiento de hoy{state.userStats.name ? `, ${state.userStats.name}` : ""}</div>
                     <div style={styles.cardHint}>{currentPlan.name} - {currentPlan.frequency}</div>
                   </div>
-                  <button type="button" onClick={generateAutomaticRoutine} style={styles.secondaryButton}>Generar rutina</button>
+                  <button type="button" onClick={generateAutomaticRoutine} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>Generar rutina</button>
                 </div>
                 <div style={styles.stackMd}>
                   {state.workoutLog.map((item) => (
-                    <div key={item.id} style={styles.listRow}>
+                    <div key={item.id} style={{ ...styles.listRow, ...themeStyles.listRow }}>
                       <div style={{ flex: 1 }}>
                         <div style={styles.rowTitle}>{item.name}</div>
                         <div style={styles.rowHint}>{item.prescription}</div>
                         <div style={styles.rowHint}>Descanso: {item.rest || 60}s</div>
                       </div>
                       <div style={styles.buttonColumn}>
-                        <button type="button" onClick={() => toggleWorkout(item.id)} style={{ ...styles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}>
+                        <button type="button" onClick={() => toggleWorkout(item.id)} style={{ ...styles.actionButton, ...themeStyles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}>
                           {item.done ? "Hecho" : "Marcar"}
                         </button>
                         <button
@@ -805,6 +843,7 @@ export default function App() {
                           onClick={() => startRest(item.rest || 60, item.id)}
                           style={{
                             ...styles.restButton,
+                            ...themeStyles.restButton,
                             ...(activeRestId === item.id && restTimer > 0 ? styles.restButtonActive : {}),
                           }}
                         >
@@ -814,9 +853,12 @@ export default function App() {
                     </div>
                   ))}
                 </div>
+                <button type="button" onClick={saveWorkoutToHistory} style={{ ...styles.primaryButton, ...themeStyles.primaryButton }}>
+                  Guardar entreno
+                </button>
               </div>
 
-              <div style={styles.card}>
+              <div style={{ ...styles.card, ...themeStyles.card }}>
                 <div style={styles.cardTitle}>Resumen</div>
                 <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
                 <div style={styles.paragraph}>Nivel actual: {state.userStats.level}</div>
@@ -828,9 +870,9 @@ export default function App() {
 
           {state.activeTab === "ejercicios" && (
             <>
-              <div style={styles.card}>
+              <div style={{ ...styles.card, ...themeStyles.card }}>
                 <div style={styles.cardTitle}>Biblioteca de ejercicios</div>
-                <input value={state.search} onChange={(e) => updateField("search", e.target.value)} placeholder="Buscar ejercicio o musculo" style={styles.input} />
+                <input value={state.search} onChange={(e) => updateField("search", e.target.value)} placeholder="Buscar ejercicio o musculo" style={{ ...styles.input, ...themeStyles.input }} />
                 <div style={styles.filterRowWrap}>
                   {["todos", "basico", "medio", "experto"].map((item) => (
                     <Chip key={item} active={state.levelFilter === item} onClick={() => updateField("levelFilter", item)}>{item}</Chip>
@@ -844,7 +886,7 @@ export default function App() {
               </div>
 
               {filteredExercises.map((exercise) => (
-                <div key={exercise.id} style={styles.card}>
+                <div key={exercise.id} style={{ ...styles.card, ...themeStyles.card }}>
                   <div style={styles.rowBetween}>
                     <div style={{ flex: 1, paddingRight: 8 }}>
                       <div style={styles.cardTitle}>{exercise.name}</div>
@@ -875,7 +917,7 @@ export default function App() {
 
           {state.activeTab === "rutinas" && (
             <>
-              <div style={styles.card}>
+              <div style={{ ...styles.card, ...themeStyles.card }}>
                 <div style={styles.cardTitle}>Seleccion de plan</div>
                 <div style={styles.cardHint}>Cambia el nivel para adaptar la rutina del usuario.</div>
                 <div style={styles.filterRowWrap}>
@@ -884,7 +926,7 @@ export default function App() {
                   ))}
                 </div>
               </div>
-              <div style={styles.card}>
+              <div style={{ ...styles.card, ...themeStyles.card }}>
                 <div style={styles.cardTitle}>{currentPlan.name}</div>
                 <div style={styles.paragraph}>Objetivo del plan: {currentPlan.goal}</div>
                 <div style={styles.paragraph}>Frecuencia: {currentPlan.frequency}</div>
@@ -895,29 +937,47 @@ export default function App() {
 
           {state.activeTab === "progreso" && (
             <>
-              <div style={styles.card}>
+              <div style={{ ...styles.card, ...themeStyles.card }}>
                 <div style={styles.cardTitle}>Constancia semanal</div>
                 <div style={styles.weekGrid}>
                   {WEEK_DAYS.map((day, index) => (
-                    <button key={day} type="button" onClick={() => toggleDay(index)} style={{ ...styles.dayBox, ...(state.completedDays[index] ? styles.dayBoxDone : {}) }}>
+                    <button key={day} type="button" onClick={() => toggleDay(index)} style={{ ...styles.dayBox, ...themeStyles.dayBox, ...(state.completedDays[index] ? styles.dayBoxDone : {}) }}>
                       <div style={{ ...styles.dayText, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}>{day}</div>
                       <div style={{ ...styles.daySubtext, ...(state.completedDays[index] ? styles.dayTextDone : {}) }}>{state.completedDays[index] ? "Hecho" : "Pendiente"}</div>
                     </button>
                   ))}
                 </div>
               </div>
-              <div style={styles.card}>
+              <div style={{ ...styles.card, ...themeStyles.card }}>
                 <div style={styles.cardTitle}>Indicadores</div>
                 <div style={styles.paragraph}>Meta actual: {state.userStats.objective}</div>
                 <div style={styles.paragraph}>Nivel estimado: {state.userStats.level}</div>
                 <div style={styles.paragraph}>Modo de entrenamiento: {state.modeFilter}</div>
                 <div style={styles.paragraph}>Adherencia: {adherence}%</div>
               </div>
+
+              <div style={{ ...styles.card, ...themeStyles.card }}>
+                <div style={styles.cardTitle}>Historial</div>
+                {state.history.length === 0 ? (
+                  <div style={styles.paragraph}>Aun no hay entrenamientos guardados.</div>
+                ) : (
+                  <div style={styles.stackMd}>
+                    {state.history.map((entry) => (
+                      <div key={entry.id} style={{ ...styles.historyRow, ...themeStyles.listRow }}>
+                        <div style={styles.rowTitle}>{entry.date}</div>
+                        <div style={styles.rowHint}>
+                          {entry.completed}/{entry.total} completados - {entry.adherence}% - {entry.mode} - {entry.level}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </>
           )}
 
           {state.activeTab === "perfil" && (
-            <div style={styles.card}>
+            <div style={{ ...styles.card, ...themeStyles.card }}>
               <div style={styles.cardTitle}>{state.userStats.name || "Tu perfil"}</div>
               <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
               <div style={styles.paragraph}>Nivel: {state.userStats.level}</div>
@@ -927,7 +987,7 @@ export default function App() {
           )}
         </div>
 
-        <div style={styles.tabBar}>
+        <div style={{ ...styles.tabBar, ...themeStyles.tabBar }}>
           {[
             { key: "inicio", label: "Inicio" },
             { key: "ejercicios", label: "Ejercicios" },
@@ -935,7 +995,7 @@ export default function App() {
             { key: "progreso", label: "Progreso" },
             { key: "perfil", label: "Perfil" },
           ].map((tab) => (
-            <button key={tab.key} type="button" onClick={() => updateField("activeTab", tab.key)} style={{ ...styles.tabItem, ...(state.activeTab === tab.key ? styles.tabItemActive : {}) }}>
+            <button key={tab.key} type="button" onClick={() => updateField("activeTab", tab.key)} style={{ ...styles.tabItem, ...themeStyles.tabItem, ...(state.activeTab === tab.key ? { ...styles.tabItemActive, ...themeStyles.tabItemActive } : {}) }}>
               {tab.label}
             </button>
           ))}
@@ -945,6 +1005,48 @@ export default function App() {
   );
 }
 
+const lightTheme = {
+  page: { background: "#f8fafc", color: "#0f172a" },
+  phoneFrame: { background: "#ffffff", borderColor: "#e2e8f0" },
+  header: { borderBottomColor: "#e2e8f0" },
+  card: { background: "#ffffff", borderColor: "#e2e8f0", color: "#0f172a" },
+  listRow: { background: "#ffffff", borderColor: "#e2e8f0", color: "#0f172a" },
+  tabBar: { background: "#ffffff", borderColor: "#e2e8f0" },
+  tabItem: { color: "#64748b" },
+  tabItemActive: { color: "#0f172a", background: "#f1f5f9" },
+  input: { background: "#ffffff", color: "#0f172a", borderColor: "#cbd5e1" },
+  secondaryButton: { background: "#ffffff", color: "#0f172a", borderColor: "#cbd5e1" },
+  primaryButton: { background: "#0f172a", color: "#ffffff", borderColor: "#0f172a" },
+  actionButton: { background: "#ffffff", color: "#0f172a", borderColor: "#cbd5e1" },
+  restButton: { background: "#e2e8f0", color: "#0f172a" },
+  timerBox: { background: "#0f172a", color: "#ffffff" },
+  stopRestButton: { background: "#ffffff", color: "#0f172a" },
+  dayBox: { background: "#ffffff", borderColor: "#cbd5e1" },
+  textStrong: { color: "#0f172a" },
+  textMuted: { color: "#475569" },
+};
+
+const darkTheme = {
+  page: { background: "#000000", color: "#ffffff" },
+  phoneFrame: { background: "#050505", borderColor: "#ffffff", boxShadow: "0 16px 40px rgba(255,255,255,0.08)" },
+  header: { borderBottomColor: "#ffffff" },
+  card: { background: "#0b0b0b", borderColor: "#ffffff", color: "#ffffff" },
+  listRow: { background: "#000000", borderColor: "#ffffff", color: "#ffffff" },
+  tabBar: { background: "#000000", borderColor: "#ffffff" },
+  tabItem: { color: "#d4d4d4" },
+  tabItemActive: { color: "#000000", background: "#ffffff" },
+  input: { background: "#000000", color: "#ffffff", borderColor: "#ffffff" },
+  secondaryButton: { background: "#000000", color: "#ffffff", borderColor: "#ffffff" },
+  primaryButton: { background: "#ffffff", color: "#000000", borderColor: "#ffffff" },
+  actionButton: { background: "#000000", color: "#ffffff", borderColor: "#ffffff" },
+  restButton: { background: "#1f1f1f", color: "#ffffff" },
+  timerBox: { background: "#ffffff", color: "#000000" },
+  stopRestButton: { background: "#000000", color: "#ffffff" },
+  dayBox: { background: "#000000", borderColor: "#ffffff" },
+  textStrong: { color: "#ffffff" },
+  textMuted: { color: "#d4d4d4" },
+};
+
 const styles = {
   page: { minHeight: "100vh", background: "#f8fafc", display: "flex", justifyContent: "center", padding: 24, fontFamily: "Inter, system-ui, sans-serif", color: "#0f172a" },
   phoneFrame: { width: "100%", maxWidth: 430, minHeight: 820, background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 32, boxShadow: "0 16px 40px rgba(15,23,42,0.08)", position: "relative", overflow: "hidden" },
@@ -953,6 +1055,8 @@ const styles = {
   brand: { fontSize: 28, fontWeight: 800 },
   subtitle: { fontSize: 14, color: "#475569", marginTop: 4, maxWidth: 230, lineHeight: 1.4 },
   secondaryButton: { border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 14, padding: "10px 14px", fontWeight: 700, cursor: "pointer" },
+  primaryButton: { border: "1px solid #0f172a", background: "#0f172a", color: "#ffffff", borderRadius: 14, padding: "12px 14px", fontWeight: 700, cursor: "pointer" },
+  headerButtons: { display: "grid", gap: 8 },
   profileGrid: { padding: 16, display: "grid", gap: 12 },
   profileField: { display: "grid", gap: 6 },
   fieldLabel: { fontSize: 13, fontWeight: 700, color: "#334155" },
@@ -1000,6 +1104,7 @@ const styles = {
   dayText: { color: "#0f172a", fontWeight: 700 },
   daySubtext: { color: "#64748b", fontSize: 12, marginTop: 4 },
   dayTextDone: { color: "#ffffff" },
+  historyRow: { border: "1px solid #e2e8f0", borderRadius: 16, padding: 12 },
   tabBar: { position: "absolute", left: 12, right: 12, bottom: 14, background: "#ffffff", borderRadius: 24, border: "1px solid #e2e8f0", padding: 6, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 4 },
   tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
   tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
