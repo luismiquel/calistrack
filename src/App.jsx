@@ -4,6 +4,20 @@ const STORAGE_KEY = "calistrack_v7";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
 const LEVELS = ["Basico", "Medio", "Experto"];
 
+function calculateUserLevel(xp) {
+  if (xp >= 1000) return "Experto";
+  if (xp >= 400) return "Medio";
+  return "Basico";
+}
+
+function calculateWorkoutXP(adherence) {
+  if (adherence >= 90) return 120;
+  if (adherence >= 75) return 90;
+  if (adherence >= 50) return 60;
+  if (adherence > 0) return 30;
+  return 0;
+}
+
 const EXERCISES = [
   {
     id: 1,
@@ -534,6 +548,8 @@ const DEFAULT_STATE = {
     objective: "Escribe tu objetivo",
     name: "",
     level: "Basico",
+    xp: 0,
+    autoLevel: true,
   },
 };
 
@@ -751,6 +767,10 @@ export default function App() {
     setState((prev) => {
       const completed = prev.workoutLog.filter((item) => item.done).length;
       const adherenceValue = calculateAdherence(prev.workoutLog);
+      const gainedXP = calculateWorkoutXP(adherenceValue);
+      const nextXP = (prev.userStats.xp || 0) + gainedXP;
+      const nextLevel = prev.userStats.autoLevel ? calculateUserLevel(nextXP) : prev.userStats.level;
+
       const newEntry = {
         id: Date.now(),
         date: new Date().toLocaleDateString(),
@@ -758,7 +778,8 @@ export default function App() {
         total: prev.workoutLog.length,
         adherence: adherenceValue,
         mode: prev.modeFilter,
-        level: prev.userStats.level,
+        level: nextLevel,
+        xp: gainedXP,
       };
 
       return {
@@ -768,13 +789,25 @@ export default function App() {
         userStats: {
           ...prev.userStats,
           workouts: prev.userStats.workouts + 1,
-          progress: Math.min(100, prev.userStats.progress + Math.max(5, Math.round(adherenceValue / 10))),
+          xp: nextXP,
+          level: nextLevel,
+          progress: Math.min(100, Math.round((nextXP % 400) / 4)),
           streak: adherenceValue > 0 ? prev.userStats.streak + 1 : prev.userStats.streak,
         },
       };
     });
     setRestTimer(0);
     setActiveRestId(null);
+  }
+
+  function toggleAutoLevel() {
+    setState((prev) => ({
+      ...prev,
+      userStats: {
+        ...prev.userStats,
+        autoLevel: !prev.userStats.autoLevel,
+      },
+    }));
   }
 
   function resetApp() {
@@ -837,6 +870,7 @@ export default function App() {
                 <StatCard label="Racha" value={`${state.userStats.streak} dias`} />
                 <StatCard label="Entrenos" value={state.userStats.workouts} />
                 <StatCard label="Progreso" value={`${state.userStats.progress}%`} />
+                <StatCard label="XP" value={state.userStats.xp || 0} />
                 <StatCard label="Semana" value={`${completedCount}/7`} />
               </div>
 
@@ -897,6 +931,8 @@ export default function App() {
                 <div style={styles.cardTitle}>Resumen</div>
                 <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
                 <div style={styles.paragraph}>Nivel actual: {state.userStats.level}</div>
+                <div style={styles.paragraph}>XP acumulado: {state.userStats.xp || 0}</div>
+                <div style={styles.paragraph}>Nivel automático: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
                 <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
                 <div style={styles.paragraph}>Adherencia actual: {adherence}%</div>
               </div>
@@ -1001,7 +1037,7 @@ export default function App() {
                       <div key={entry.id} style={{ ...styles.historyRow, ...themeStyles.listRow }}>
                         <div style={styles.rowTitle}>{entry.date}</div>
                         <div style={styles.rowHint}>
-                          {entry.completed}/{entry.total} completados - {entry.adherence}% - {entry.mode} - {entry.level}
+                          {entry.completed}/{entry.total} completados - {entry.adherence}% - {entry.mode} - {entry.level} - +{entry.xp || 0} XP
                         </div>
                       </div>
                     ))}
@@ -1017,6 +1053,11 @@ export default function App() {
               <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
               <div style={styles.paragraph}>Nivel: {state.userStats.level}</div>
               <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
+              <div style={styles.paragraph}>XP: {state.userStats.xp || 0}</div>
+              <div style={styles.paragraph}>Nivel automático: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
+              <button type="button" onClick={toggleAutoLevel} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>
+                {state.userStats.autoLevel ? "Desactivar nivel automático" : "Activar nivel automático"}
+              </button>
               <div style={styles.paragraph}>Arquitectura: React + Vite + localStorage.</div>
             </div>
           )}
