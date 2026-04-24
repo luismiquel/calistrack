@@ -747,6 +747,36 @@ export default function App() {
     });
   }
 
+  function finishWorkout() {
+    setState((prev) => {
+      const completed = prev.workoutLog.filter((item) => item.done).length;
+      const adherenceValue = calculateAdherence(prev.workoutLog);
+      const newEntry = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        completed,
+        total: prev.workoutLog.length,
+        adherence: adherenceValue,
+        mode: prev.modeFilter,
+        level: prev.userStats.level,
+      };
+
+      return {
+        ...prev,
+        workoutLog: prev.workoutLog.map((item) => ({ ...item, done: false })),
+        history: [newEntry, ...(prev.history || [])].slice(0, 20),
+        userStats: {
+          ...prev.userStats,
+          workouts: prev.userStats.workouts + 1,
+          progress: Math.min(100, prev.userStats.progress + Math.max(5, Math.round(adherenceValue / 10))),
+          streak: adherenceValue > 0 ? prev.userStats.streak + 1 : prev.userStats.streak,
+        },
+      };
+    });
+    setRestTimer(0);
+    setActiveRestId(null);
+  }
+
   function resetApp() {
     window.localStorage.removeItem(STORAGE_KEY);
     setState(DEFAULT_STATE);
@@ -853,9 +883,14 @@ export default function App() {
                     </div>
                   ))}
                 </div>
-                <button type="button" onClick={saveWorkoutToHistory} style={{ ...styles.primaryButton, ...themeStyles.primaryButton }}>
-                  Guardar entreno
-                </button>
+                <div style={styles.finishGrid}>
+                  <button type="button" onClick={saveWorkoutToHistory} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>
+                    Guardar entreno
+                  </button>
+                  <button type="button" onClick={finishWorkout} style={{ ...styles.primaryButton, ...themeStyles.primaryButton }}>
+                    Finalizar entreno
+                  </button>
+                </div>
               </div>
 
               <div style={{ ...styles.card, ...themeStyles.card }}>
@@ -1057,6 +1092,7 @@ const styles = {
   secondaryButton: { border: "1px solid #cbd5e1", background: "#ffffff", borderRadius: 14, padding: "10px 14px", fontWeight: 700, cursor: "pointer" },
   primaryButton: { border: "1px solid #0f172a", background: "#0f172a", color: "#ffffff", borderRadius: 14, padding: "12px 14px", fontWeight: 700, cursor: "pointer" },
   headerButtons: { display: "grid", gap: 8 },
+  finishGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 },
   profileGrid: { padding: 16, display: "grid", gap: 12 },
   profileField: { display: "grid", gap: 6 },
   fieldLabel: { fontSize: 13, fontWeight: 700, color: "#334155" },
