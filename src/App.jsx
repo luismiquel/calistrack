@@ -598,6 +598,16 @@ function calculateAdherence(workoutLog) {
   return Math.round((done / workoutLog.length) * 100);
 }
 
+function getDifficultyTag(exerciseLevel, userLevel) {
+  const rank = { basico: 1, medio: 2, experto: 3 };
+  const user = rank[levelKeyFromUser(userLevel)] || 1;
+  const ex = rank[exerciseLevel] || 1;
+
+  if (ex > user) return "Avanzado para ti";
+  if (ex < user) return "Fácil";
+  return "Adecuado";
+}
+
 function filterExercises(list, search, levelFilter, categoryFilter, modeFilter) {
   return list.filter((exercise) => {
     const haystack = `${exercise.name} ${exercise.category} ${exercise.muscle} ${exercise.mode}`.toLowerCase();
@@ -812,7 +822,11 @@ export default function App() {
     setState((prev) => {
       const completed = prev.workoutLog.filter((item) => item.done).length;
       const adherenceValue = calculateAdherence(prev.workoutLog);
-      const gainedXP = calculateWorkoutXP(adherenceValue);
+      let gainedXP = calculateWorkoutXP(adherenceValue);
+
+// bonus por dificultad
+const difficultyBonus = state.workoutLog.length > 0 ? 20 : 0;
+gainedXP += difficultyBonus;
       const nextXP = (prev.userStats.xp || 0) + gainedXP;
       const nextLevel = prev.userStats.autoLevel ? calculateUserLevel(nextXP) : prev.userStats.level;
 
@@ -1038,6 +1052,9 @@ export default function App() {
                     <div style={{ flex: 1, paddingRight: 8 }}>
                       <div style={styles.cardTitle}>{exercise.name}</div>
                       <div style={styles.cardHint}>{exercise.description}</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#f59e0b", marginTop: 4 }}>
+                        {getDifficultyTag(exercise.level, state.userStats.level)}
+                      </div>
                     </div>
                     <Badge active>{exercise.level}</Badge>
                   </div>
@@ -1277,6 +1294,7 @@ const styles = {
   tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
   tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
 };
+
 
 
 
