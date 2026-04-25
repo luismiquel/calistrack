@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "calistrack_v7";
+const STORAGE_KEY = "calistrack_v8";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
 const LEVELS = ["Basico", "Medio", "Experto"];
 
@@ -18,6 +18,20 @@ function calculateWorkoutXP(adherence) {
   return 0;
 }
 
+function getXPProgress(xp) {
+  if (xp >= 1000) {
+    return { currentLevel: "Experto", nextLevel: "Máximo", percent: 100, remaining: 0 };
+  }
+
+  if (xp >= 400) {
+    const percent = Math.round(((xp - 400) / 600) * 100);
+    return { currentLevel: "Medio", nextLevel: "Experto", percent, remaining: 1000 - xp };
+  }
+
+  const percent = Math.round((xp / 400) * 100);
+  return { currentLevel: "Basico", nextLevel: "Medio", percent, remaining: 400 - xp };
+}
+
 const EXERCISES = [
   {
     id: 1,
@@ -32,7 +46,7 @@ const EXERCISES = [
     description: "Perfectas para empezar con buena tecnica.",
     howTo: [
       "Apoya las manos en una superficie elevada.",
-      "Mantén el cuerpo recto de hombros a tobillos.",
+      "MantÃ©n el cuerpo recto de hombros a tobillos.",
       "Baja el pecho controlando el movimiento.",
       "Empuja hasta volver arriba sin arquear la espalda.",
     ],
@@ -49,8 +63,8 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Base de fuerza del tren superior.",
     howTo: [
-      "Coloca las manos un poco más abiertas que los hombros.",
-      "Aprieta abdomen y glúteos para mantener el cuerpo recto.",
+      "Coloca las manos un poco mÃ¡s abiertas que los hombros.",
+      "Aprieta abdomen y glÃºteos para mantener el cuerpo recto.",
       "Desciende hasta que el pecho se acerque al suelo.",
       "Empuja fuerte hasta extender los brazos.",
     ],
@@ -68,8 +82,8 @@ const EXERCISES = [
     description: "Progresion ideal antes de dominadas estrictas.",
     howTo: [
       "Agarra la barra con el cuerpo por debajo.",
-      "Mantén talones apoyados y cuerpo en línea recta.",
-      "Tira del pecho hacia la barra juntando escápulas.",
+      "MantÃ©n talones apoyados y cuerpo en lÃ­nea recta.",
+      "Tira del pecho hacia la barra juntando escÃ¡pulas.",
       "Baja de forma lenta y controlada.",
     ],
   },
@@ -88,7 +102,7 @@ const EXERCISES = [
       "Usa banda o apoyo para reducir carga.",
       "Agarra la barra con firmeza y activa hombros.",
       "Sube llevando el pecho hacia la barra.",
-      "Desciende despacio hasta extensión casi completa.",
+      "Desciende despacio hasta extensiÃ³n casi completa.",
     ],
   },
   {
@@ -104,8 +118,8 @@ const EXERCISES = [
     description: "Ejercicio esencial de tren inferior.",
     howTo: [
       "Coloca los pies al ancho de hombros.",
-      "Empuja la cadera hacia atrás al bajar.",
-      "Mantén el pecho arriba y talones en el suelo.",
+      "Empuja la cadera hacia atrÃ¡s al bajar.",
+      "MantÃ©n el pecho arriba y talones en el suelo.",
       "Sube extendiendo rodillas y cadera.",
     ],
   },
@@ -122,8 +136,8 @@ const EXERCISES = [
     description: "Estabilidad basica del core.",
     howTo: [
       "Apoya antebrazos y puntas de los pies.",
-      "Mantén hombros alineados con codos.",
-      "Aprieta abdomen y glúteos.",
+      "MantÃ©n hombros alineados con codos.",
+      "Aprieta abdomen y glÃºteos.",
       "Evita hundir o elevar demasiado la cadera.",
     ],
   },
@@ -142,7 +156,7 @@ const EXERCISES = [
       "Apoya las manos en el borde del banco.",
       "Extiende las piernas hacia delante.",
       "Baja flexionando codos cerca del cuerpo.",
-      "Empuja hasta volver a la posición inicial.",
+      "Empuja hasta volver a la posiciÃ³n inicial.",
     ],
   },
   {
@@ -176,7 +190,7 @@ const EXERCISES = [
     description: "Fuerza real del tren superior.",
     howTo: [
       "Cuelga con agarre firme y hombros activos.",
-      "Inicia el tirón desde la espalda, no solo con brazos.",
+      "Inicia el tirÃ³n desde la espalda, no solo con brazos.",
       "Lleva el pecho hacia la barra.",
       "Baja controlando sin balancearte.",
     ],
@@ -193,7 +207,7 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Paso previo para L-sit.",
     howTo: [
-      "Cuelga de una barra o apóyate en paralelas.",
+      "Cuelga de una barra o apÃ³yate en paralelas.",
       "Sube las rodillas hacia el pecho.",
       "Evita impulsarte con balanceo.",
       "Baja despacio manteniendo el abdomen activo.",
@@ -213,7 +227,7 @@ const EXERCISES = [
     howTo: [
       "Da un paso largo hacia delante.",
       "Baja ambas rodillas controladamente.",
-      "Mantén torso erguido y abdomen firme.",
+      "MantÃ©n torso erguido y abdomen firme.",
       "Empuja con la pierna delantera para volver.",
     ],
   },
@@ -229,10 +243,10 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Progresion intermedia de compresion.",
     howTo: [
-      "Apóyate en paralelas o bloques.",
+      "ApÃ³yate en paralelas o bloques.",
       "Eleva el cuerpo con hombros deprimidos.",
       "Lleva rodillas al pecho manteniendo pies fuera del suelo.",
-      "Sostén sin redondear demasiado la espalda.",
+      "SostÃ©n sin redondear demasiado la espalda.",
     ],
   },
   {
@@ -250,7 +264,7 @@ const EXERCISES = [
       "Apoya los pies en una superficie elevada.",
       "Coloca las manos firmes en el suelo.",
       "Baja controlando el pecho hacia el suelo.",
-      "Empuja sin perder alineación corporal.",
+      "Empuja sin perder alineaciÃ³n corporal.",
     ],
   },
   {
@@ -267,7 +281,7 @@ const EXERCISES = [
     howTo: [
       "Coloca cadera alta formando una V invertida.",
       "Baja la cabeza entre las manos.",
-      "Mantén codos orientados hacia atrás.",
+      "MantÃ©n codos orientados hacia atrÃ¡s.",
       "Empuja hacia arriba llevando carga a hombros.",
     ],
   },
@@ -283,7 +297,7 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Fuerza, equilibrio y movilidad.",
     howTo: [
-      "Sujétate a un apoyo ligero.",
+      "SujÃ©tate a un apoyo ligero.",
       "Extiende una pierna al frente.",
       "Baja sobre la pierna de apoyo sin perder equilibrio.",
       "Sube empujando fuerte con el pie apoyado.",
@@ -303,8 +317,8 @@ const EXERCISES = [
     howTo: [
       "Empuja fuerte contra las paralelas.",
       "Eleva ambas piernas rectas al frente.",
-      "Mantén rodillas extendidas y abdomen firme.",
-      "Sostén sin dejar caer la cadera.",
+      "MantÃ©n rodillas extendidas y abdomen firme.",
+      "SostÃ©n sin dejar caer la cadera.",
     ],
   },
   {
@@ -320,8 +334,8 @@ const EXERCISES = [
     description: "Muy utiles para progresion a muscle-up.",
     howTo: [
       "Inicia desde colgado estable.",
-      "Tira con máxima velocidad y potencia.",
-      "Busca que el pecho suba lo más alto posible.",
+      "Tira con mÃ¡xima velocidad y potencia.",
+      "Busca que el pecho suba lo mÃ¡s alto posible.",
       "Baja con control para repetir limpio.",
     ],
   },
@@ -340,7 +354,7 @@ const EXERCISES = [
       "Apoya hombros en banco y sujeta un punto firme.",
       "Eleva el cuerpo en bloque.",
       "Desciende lentamente sin doblarte por la cadera.",
-      "Vuelve arriba manteniendo tensión abdominal.",
+      "Vuelve arriba manteniendo tensiÃ³n abdominal.",
     ],
   },
   {
@@ -356,7 +370,7 @@ const EXERCISES = [
     description: "Ejercicio militar clasico de resistencia y potencia.",
     howTo: [
       "Desde pie, baja las manos al suelo.",
-      "Lleva los pies atrás a posición de plancha.",
+      "Lleva los pies atrÃ¡s a posiciÃ³n de plancha.",
       "Vuelve con los pies hacia delante.",
       "Salta extendiendo el cuerpo arriba.",
     ],
@@ -374,9 +388,9 @@ const EXERCISES = [
     description: "Muy usadas en entrenamiento militar para fuerza de triceps.",
     howTo: [
       "Junta las manos formando un diamante.",
-      "Mantén codos cerca del cuerpo.",
+      "MantÃ©n codos cerca del cuerpo.",
       "Baja controlando el pecho hacia las manos.",
-      "Empuja fuerte hasta extensión completa.",
+      "Empuja fuerte hasta extensiÃ³n completa.",
     ],
   },
   {
@@ -391,10 +405,10 @@ const EXERCISES = [
     mode: "militar",
     description: "Trabajo cardiovascular tipo militar.",
     howTo: [
-      "Corre en el mismo sitio a máxima intensidad.",
+      "Corre en el mismo sitio a mÃ¡xima intensidad.",
       "Eleva rodillas de forma activa.",
-      "Mueve brazos con ritmo rápido.",
-      "Mantén el tronco estable y respiración viva.",
+      "Mueve brazos con ritmo rÃ¡pido.",
+      "MantÃ©n el tronco estable y respiraciÃ³n viva.",
     ],
   },
   {
@@ -409,9 +423,9 @@ const EXERCISES = [
     mode: "militar",
     description: "Alta intensidad usada en entrenamiento funcional militar.",
     howTo: [
-      "Colócate en plancha alta.",
-      "Lleva una rodilla al pecho y alterna rápido.",
-      "Mantén hombros sobre las manos.",
+      "ColÃ³cate en plancha alta.",
+      "Lleva una rodilla al pecho y alterna rÃ¡pido.",
+      "MantÃ©n hombros sobre las manos.",
       "Evita mover demasiado la cadera.",
     ],
   },
@@ -428,7 +442,7 @@ const EXERCISES = [
     description: "Trabajo explosivo tipo entrenamiento de combate.",
     howTo: [
       "Parte de pie con rodillas ligeramente flexionadas.",
-      "Salta lo más vertical posible.",
+      "Salta lo mÃ¡s vertical posible.",
       "Lleva rodillas hacia el pecho en el aire.",
       "Aterriza suave y repite con control.",
     ],
@@ -445,9 +459,9 @@ const EXERCISES = [
     mode: "militar",
     description: "Simula desplazamientos militares en el suelo.",
     howTo: [
-      "Adopta posición de plancha baja.",
-      "Desplázate lateral o frontal manteniendo tensión.",
-      "Mantén abdomen fuerte y cadera estable.",
+      "Adopta posiciÃ³n de plancha baja.",
+      "DesplÃ¡zate lateral o frontal manteniendo tensiÃ³n.",
+      "MantÃ©n abdomen fuerte y cadera estable.",
       "Respira sin perder la postura.",
     ],
   },
@@ -597,7 +611,7 @@ function runTests() {
   console.assert(calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75, "La adherencia debe ser 75");
   console.assert(filterExercises(EXERCISES, "dominadas", "todos", "todas", "mixto").length >= 3, "Debe encontrar ejercicios de dominadas");
   console.assert(filterExercises(EXERCISES, "", "todos", "todas", "militar").every((item) => item.mode === "militar"), "Debe filtrar por modo");
-  console.assert(buildAutoWorkout("militar", "Basico").every((item) => typeof item.name === "string"), "Debe crear rutina automática");
+  console.assert(buildAutoWorkout("militar", "Basico").every((item) => typeof item.name === "string"), "Debe crear rutina automÃ¡tica");
 }
 
 runTests();
@@ -655,6 +669,7 @@ export default function App() {
   const currentPlan = PLANS[state.selectedPlan];
   const completedCount = state.completedDays.filter(Boolean).length;
   const adherence = calculateAdherence(state.workoutLog);
+  const xpProgress = getXPProgress(state.userStats.xp || 0);
 
   const filteredExercises = useMemo(() => {
     return filterExercises(EXERCISES, state.search, state.levelFilter, state.categoryFilter, state.modeFilter);
@@ -689,6 +704,20 @@ export default function App() {
         progress: planKey === "basico" ? 35 : planKey === "medio" ? 68 : 82,
       },
     }));
+  }
+
+  function trainNow() {
+    setState((prev) => ({
+      ...prev,
+      activeTab: "inicio",
+      workoutLog: buildAutoWorkout(prev.modeFilter, prev.userStats.level),
+      userStats: {
+        ...prev.userStats,
+        progress: Math.min(100, prev.userStats.progress + 3),
+      },
+    }));
+    setRestTimer(0);
+    setActiveRestId(null);
   }
 
   function generateAutomaticRoutine() {
@@ -874,6 +903,10 @@ export default function App() {
                 <StatCard label="Semana" value={`${completedCount}/7`} />
               </div>
 
+              <button type="button" onClick={trainNow} style={{ ...styles.heroButton, ...themeStyles.primaryButton }}>
+                Entrenar ahora
+              </button>
+
               {restTimer > 0 && (
                 <div style={{ ...styles.timerBox, ...themeStyles.timerBox }}>
                   <div style={styles.timerTitle}>Descanso activo</div>
@@ -932,7 +965,19 @@ export default function App() {
                 <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
                 <div style={styles.paragraph}>Nivel actual: {state.userStats.level}</div>
                 <div style={styles.paragraph}>XP acumulado: {state.userStats.xp || 0}</div>
-                <div style={styles.paragraph}>Nivel automático: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
+                <div style={styles.xpBox}>
+                  <div style={styles.xpTopLine}>
+                    <span>Progreso hacia {xpProgress.nextLevel}</span>
+                    <strong>{xpProgress.percent}%</strong>
+                  </div>
+                  <div style={{ ...styles.xpTrack, ...themeStyles.xpTrack }}>
+                    <div style={{ ...styles.xpFill, width: `${xpProgress.percent}%` }} />
+                  </div>
+                  <div style={styles.rowHint}>
+                    {xpProgress.remaining > 0 ? `${xpProgress.remaining} XP para subir de nivel` : "Nivel máximo alcanzado"}
+                  </div>
+                </div>
+                <div style={styles.paragraph}>Nivel automÃ¡tico: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
                 <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
                 <div style={styles.paragraph}>Adherencia actual: {adherence}%</div>
               </div>
@@ -1054,9 +1099,9 @@ export default function App() {
               <div style={styles.paragraph}>Nivel: {state.userStats.level}</div>
               <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
               <div style={styles.paragraph}>XP: {state.userStats.xp || 0}</div>
-              <div style={styles.paragraph}>Nivel automático: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
+              <div style={styles.paragraph}>Nivel automÃ¡tico: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
               <button type="button" onClick={toggleAutoLevel} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>
-                {state.userStats.autoLevel ? "Desactivar nivel automático" : "Activar nivel automático"}
+                {state.userStats.autoLevel ? "Desactivar nivel automÃ¡tico" : "Activar nivel automÃ¡tico"}
               </button>
               <div style={styles.paragraph}>Arquitectura: React + Vite + localStorage.</div>
             </div>
@@ -1097,7 +1142,7 @@ const lightTheme = {
   restButton: { background: "#e2e8f0", color: "#0f172a" },
   timerBox: { background: "#0f172a", color: "#ffffff" },
   stopRestButton: { background: "#ffffff", color: "#0f172a" },
-  dayBox: { background: "#ffffff", borderColor: "#cbd5e1" },
+  dayBox: { background: "#ffffff", borderColor: "#cbd5e1" }, xpTrack: { background: "#e2e8f0" },
   textStrong: { color: "#0f172a" },
   textMuted: { color: "#475569" },
 };
@@ -1118,7 +1163,7 @@ const darkTheme = {
   restButton: { background: "#1f1f1f", color: "#ffffff" },
   timerBox: { background: "#ffffff", color: "#000000" },
   stopRestButton: { background: "#000000", color: "#ffffff" },
-  dayBox: { background: "#000000", borderColor: "#ffffff" },
+  dayBox: { background: "#000000", borderColor: "#ffffff" }, xpTrack: { background: "#1f1f1f" },
   textStrong: { color: "#ffffff" },
   textMuted: { color: "#d4d4d4" },
 };
@@ -1134,6 +1179,11 @@ const styles = {
   primaryButton: { border: "1px solid #0f172a", background: "#0f172a", color: "#ffffff", borderRadius: 14, padding: "12px 14px", fontWeight: 700, cursor: "pointer" },
   headerButtons: { display: "grid", gap: 8 },
   finishGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 },
+  heroButton: { border: "none", borderRadius: 22, padding: "18px 16px", fontSize: 18, fontWeight: 900, cursor: "pointer" },
+  xpBox: { display: "grid", gap: 8, marginTop: 8 },
+  xpTopLine: { display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, fontWeight: 700 },
+  xpTrack: { height: 12, background: "#e2e8f0", borderRadius: 999, overflow: "hidden" },
+  xpFill: { height: "100%", background: "#22c55e", borderRadius: 999, transition: "width 0.3s ease" },
   profileGrid: { padding: 16, display: "grid", gap: 12 },
   profileField: { display: "grid", gap: 6 },
   fieldLabel: { fontSize: 13, fontWeight: 700, color: "#334155" },
@@ -1186,3 +1236,4 @@ const styles = {
   tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
   tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
 };
+
