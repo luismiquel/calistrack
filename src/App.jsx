@@ -2,12 +2,12 @@
 
 const STORAGE_KEY = "calistrack_v10";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
-const LEVELS = ["Basico", "Medio", "Experto"];
+const LEVELS = ["Básico", "Medio", "Experto"];
 
 function calculateUserLevel(xp) {
   if (xp >= 1000) return "Experto";
   if (xp >= 400) return "Medio";
-  return "Basico";
+  return "Básico";
 }
 
 function calculateWorkoutXP(adherence) {
@@ -29,14 +29,14 @@ function getXPProgress(xp) {
   }
 
   const percent = Math.round((xp / 400) * 100);
-  return { currentLevel: "Basico", nextLevel: "Medio", percent, remaining: 400 - xp };
+  return { currentLevel: "Básico", nextLevel: "Medio", percent, remaining: 400 - xp };
 }
 
 const EXERCISES = [
   {
     id: 1,
     name: "Flexiones inclinadas",
-    level: "basico",
+    level: "Básico",
     category: "empuje",
     muscle: "Pecho / Triceps",
     sets: 3,
@@ -54,7 +54,7 @@ const EXERCISES = [
   {
     id: 2,
     name: "Flexiones clasicas",
-    level: "basico",
+    level: "Básico",
     category: "empuje",
     muscle: "Pecho / Hombro / Triceps",
     sets: 4,
@@ -72,7 +72,7 @@ const EXERCISES = [
   {
     id: 3,
     name: "Remo australiano",
-    level: "basico",
+    level: "Básico",
     category: "tiron",
     muscle: "Espalda / Biceps",
     sets: 4,
@@ -90,7 +90,7 @@ const EXERCISES = [
   {
     id: 4,
     name: "Dominadas asistidas",
-    level: "basico",
+    level: "Básico",
     category: "tiron",
     muscle: "Espalda / Biceps",
     sets: 4,
@@ -108,7 +108,7 @@ const EXERCISES = [
   {
     id: 5,
     name: "Sentadillas al aire",
-    level: "basico",
+    level: "Básico",
     category: "pierna",
     muscle: "Cuadriceps / Gluteos",
     sets: 4,
@@ -126,7 +126,7 @@ const EXERCISES = [
   {
     id: 6,
     name: "Plancha frontal",
-    level: "basico",
+    level: "Básico",
     category: "core",
     muscle: "Abdomen / Lumbar",
     sets: 3,
@@ -396,7 +396,7 @@ const EXERCISES = [
   {
     id: 21,
     name: "Sprint en sitio",
-    level: "basico",
+    level: "Básico",
     category: "cardio",
     muscle: "Pierna / Resistencia",
     sets: 5,
@@ -470,7 +470,7 @@ const EXERCISES = [
 const WEEK_DAYS = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
 
 const PLANS = {
-  basico: {
+  Básico: {
     name: "Plan básico",
     goal: "Crear base de fuerza y técnica",
     frequency: "3 días por semana",
@@ -509,7 +509,7 @@ function levelKeyFromUser(level) {
   const normalized = String(level || "").toLowerCase();
   if (normalized === "medio") return "medio";
   if (normalized === "experto") return "experto";
-  return "basico";
+  return "Básico";
 }
 
 function buildWorkoutLog(planKey) {
@@ -553,7 +553,7 @@ const DEFAULT_STATE = {
   categoryFilter: "todas",
   modeFilter: "mixto",
   completedDays: [true, false, false, true, false, false, false],
-  workoutLog: buildWorkoutLog("basico"),
+  workoutLog: buildWorkoutLog("Básico"),
   history: [],
   userStats: {
     isPro: false,
@@ -562,7 +562,7 @@ const DEFAULT_STATE = {
     progress: 35,
     objective: "Escribe tu objetivo",
     name: "",
-    level: "Basico",
+    level: "Básico",
     xp: 0,
     autoLevel: true,
   },
@@ -576,6 +576,7 @@ function loadState() {
     return {
       ...DEFAULT_STATE,
       ...parsed,
+      selectedPlan: PLANS[parsed.selectedPlan] ? parsed.selectedPlan : "basico",
       userStats: {
     isPro: false, ...DEFAULT_STATE.userStats, ...(parsed.userStats || {}) },
       completedDays: Array.isArray(parsed.completedDays) ? parsed.completedDays.slice(0, 7) : DEFAULT_STATE.completedDays,
@@ -609,11 +610,11 @@ function filterExercises(list, search, levelFilter, categoryFilter, modeFilter) 
 }
 
 function runTests() {
-  console.assert(buildWorkoutLog("basico").length === 4, "El Plan básico debe tener 4 ejercicios");
+  console.assert(buildWorkoutLog("Básico").length === 4, "El Plan básico debe tener 4 ejercicios");
   console.assert(calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75, "La adherencia debe ser 75");
   console.assert(filterExercises(EXERCISES, "dominadas", "todos", "todas", "mixto").length >= 3, "Debe encontrar ejercicios de dominadas");
   console.assert(filterExercises(EXERCISES, "", "todos", "todas", "militar").every((item) => item.mode === "militar"), "Debe filtrar por modo");
-  console.assert(buildAutoWorkout("militar", "Basico").every((item) => typeof item.name === "string"), "Debe crear rutina automÃ¡tica");
+  console.assert(buildAutoWorkout("militar", "Básico").every((item) => typeof item.name === "string"), "Debe crear rutina automÃ¡tica");
 }
 
 runTests();
@@ -668,7 +669,7 @@ export default function App() {
     return () => clearInterval(interval);
   }, [restTimer]);
 
-  const currentPlan = PLANS[state.selectedPlan];
+  const currentPlan = PLANS[state.selectedPlan] || PLANS.basico || Object.values(PLANS)[0];
   const completedCount = state.completedDays.filter(Boolean).length;
   const adherence = calculateAdherence(state.workoutLog);
   const xpProgress = getXPProgress(state.userStats.xp || 0);
@@ -704,8 +705,8 @@ export default function App() {
       userStats: {
     isPro: false,
         ...prev.userStats,
-        level: planKey === "basico" ? "Basico" : planKey === "medio" ? "Medio" : "Experto",
-        progress: planKey === "basico" ? 35 : planKey === "medio" ? 68 : 82,
+        level: planKey === "Básico" ? "Básico" : planKey === "medio" ? "Medio" : "Experto",
+        progress: planKey === "Básico" ? 35 : planKey === "medio" ? 68 : 82,
       },
     }));
   }
@@ -1007,7 +1008,7 @@ export default function App() {
                     {xpProgress.remaining > 0 ? `${xpProgress.remaining} XP para subir de nivel` : "Nivel máximo alcanzado"}
                   </div>
                 </div>
-                <div style={styles.paragraph}>Nivel automÃ¡tico: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
+                <div style={styles.paragraph}>Nivel automático: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
                 <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
                 <div style={styles.paragraph}>Adherencia actual: {adherence}%</div>
               </div>
@@ -1020,13 +1021,13 @@ export default function App() {
                 <div style={styles.cardTitle}>Biblioteca de ejercicios</div>
                 <input value={state.search} onChange={(e) => updateField("search", e.target.value)} placeholder="Buscar ejercicio o musculo" style={{ ...styles.input, ...themeStyles.input }} />
                 <div style={styles.filterRowWrap}>
-                  {["todos", "basico", "medio", "experto"].map((item) => (
-                    <Chip key={item} active={state.levelFilter === item} onClick={() => updateField("levelFilter", item)}>{item}</Chip>
+                  {["todos", "Básico", "medio", "experto"].map((item) => (
+                    <Chip key={item === "basico" ? "básico" : item} active={state.levelFilter === item} onClick={() => updateField("levelFilter", item)}>{item === "basico" ? "básico" : item}</Chip>
                   ))}
                 </div>
                 <div style={styles.filterRowWrap}>
                   {["todas", "empuje", "tiron", "pierna", "core", "fullbody", "cardio"].map((item) => (
-                    <Chip key={item} active={state.categoryFilter === item} onClick={() => updateField("categoryFilter", item)}>{item}</Chip>
+                    <Chip key={item === "basico" ? "básico" : item} active={state.categoryFilter === item} onClick={() => updateField("categoryFilter", item)}>{item === "basico" ? "básico" : item}</Chip>
                   ))}
                 </div>
               </div>
@@ -1067,8 +1068,8 @@ export default function App() {
                 <div style={styles.cardTitle}>Seleccion de plan</div>
                 <div style={styles.cardHint}>Cambia el nivel para adaptar la rutina del usuario.</div>
                 <div style={styles.filterRowWrap}>
-                  {["basico", "medio", "experto"].map((item) => (
-                    <Chip key={item} active={state.selectedPlan === item} onClick={() => selectPlan(item)}>{item}</Chip>
+                  {["Básico", "medio", "experto"].map((item) => (
+                    <Chip key={item === "basico" ? "básico" : item} active={state.selectedPlan === item} onClick={() => selectPlan(item)}>{item === "basico" ? "básico" : item}</Chip>
                   ))}
                 </div>
               </div>
@@ -1129,9 +1130,9 @@ export default function App() {
               <div style={styles.paragraph}>Nivel: {state.userStats.level}</div>
               <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
               <div style={styles.paragraph}>XP: {state.userStats.xp || 0}</div>
-              <div style={styles.paragraph}>Nivel automÃ¡tico: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
+              <div style={styles.paragraph}>Nivel automático: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
               <button type="button" onClick={toggleAutoLevel} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>
-                {state.userStats.autoLevel ? "Desactivar nivel automÃ¡tico" : "Activar nivel automÃ¡tico"}
+                {state.userStats.autoLevel ? "Desactivar Nivel automático" : "Activar Nivel automático"}
               </button>
               <div style={styles.paragraph}>Arquitectura: React + Vite + localStorage.</div>
 
@@ -1276,6 +1277,9 @@ const styles = {
   tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
   tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
 };
+
+
+
 
 
 
