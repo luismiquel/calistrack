@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "calistrack_v8";
+const STORAGE_KEY = "calistrack_v9";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
 const LEVELS = ["Basico", "Medio", "Experto"];
 
@@ -1142,7 +1142,7 @@ const lightTheme = {
   restButton: { background: "#e2e8f0", color: "#0f172a" },
   timerBox: { background: "#0f172a", color: "#ffffff" },
   stopRestButton: { background: "#ffffff", color: "#0f172a" },
-  dayBox: { background: "#ffffff", borderColor: "#cbd5e1" }, xpTrack: { background: "#e2e8f0" },
+  dayBox: { background: "#ffffff", borderColor: "#cbd5e1" }, xpTrack: { background: "#e2e8f0" }, xpTrack: { background: "#e2e8f0" },
   textStrong: { color: "#0f172a" },
   textMuted: { color: "#475569" },
 };
@@ -1163,7 +1163,7 @@ const darkTheme = {
   restButton: { background: "#1f1f1f", color: "#ffffff" },
   timerBox: { background: "#ffffff", color: "#000000" },
   stopRestButton: { background: "#000000", color: "#ffffff" },
-  dayBox: { background: "#000000", borderColor: "#ffffff" }, xpTrack: { background: "#1f1f1f" },
+  dayBox: { background: "#000000", borderColor: "#ffffff" }, xpTrack: { background: "#1f1f1f" }, xpTrack: { background: "#1f1f1f" },
   textStrong: { color: "#ffffff" },
   textMuted: { color: "#d4d4d4" },
 };
@@ -1236,4 +1236,5 @@ const styles = {
   tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
   tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
 };
+
 
