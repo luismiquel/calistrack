@@ -46,7 +46,7 @@ const EXERCISES = [
     description: "Perfectas para empezar con buena tecnica.",
     howTo: [
       "Apoya las manos en una superficie elevada.",
-      "MantÃ©n el cuerpo recto de hombros a tobillos.",
+      "Mantén el cuerpo recto de hombros a tobillos.",
       "Baja el pecho controlando el movimiento.",
       "Empuja hasta volver arriba sin arquear la espalda.",
     ],
@@ -63,8 +63,8 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Base de fuerza del tren superior.",
     howTo: [
-      "Coloca las manos un poco mÃ¡s abiertas que los hombros.",
-      "Aprieta abdomen y glÃºteos para mantener el cuerpo recto.",
+      "Coloca las manos un poco más abiertas que los hombros.",
+      "Aprieta abdomen y glúteos para mantener el cuerpo recto.",
       "Desciende hasta que el pecho se acerque al suelo.",
       "Empuja fuerte hasta extender los brazos.",
     ],
@@ -82,8 +82,8 @@ const EXERCISES = [
     description: "Progresion ideal antes de dominadas estrictas.",
     howTo: [
       "Agarra la barra con el cuerpo por debajo.",
-      "MantÃ©n talones apoyados y cuerpo en lÃ­nea recta.",
-      "Tira del pecho hacia la barra juntando escÃ¡pulas.",
+      "Mantén talones apoyados y cuerpo en línea recta.",
+      "Tira del pecho hacia la barra juntando escápulas.",
       "Baja de forma lenta y controlada.",
     ],
   },
@@ -102,7 +102,7 @@ const EXERCISES = [
       "Usa banda o apoyo para reducir carga.",
       "Agarra la barra con firmeza y activa hombros.",
       "Sube llevando el pecho hacia la barra.",
-      "Desciende despacio hasta extensiÃ³n casi completa.",
+      "Desciende despacio hasta extensión casi completa.",
     ],
   },
   {
@@ -118,8 +118,8 @@ const EXERCISES = [
     description: "Ejercicio esencial de tren inferior.",
     howTo: [
       "Coloca los pies al ancho de hombros.",
-      "Empuja la cadera hacia atrÃ¡s al bajar.",
-      "MantÃ©n el pecho arriba y talones en el suelo.",
+      "Empuja la cadera hacia atrás al bajar.",
+      "Mantén el pecho arriba y talones en el suelo.",
       "Sube extendiendo rodillas y cadera.",
     ],
   },
@@ -136,8 +136,8 @@ const EXERCISES = [
     description: "Estabilidad basica del core.",
     howTo: [
       "Apoya antebrazos y puntas de los pies.",
-      "MantÃ©n hombros alineados con codos.",
-      "Aprieta abdomen y glÃºteos.",
+      "Mantén hombros alineados con codos.",
+      "Aprieta abdomen y glúteos.",
       "Evita hundir o elevar demasiado la cadera.",
     ],
   },
@@ -156,7 +156,7 @@ const EXERCISES = [
       "Apoya las manos en el borde del banco.",
       "Extiende las piernas hacia delante.",
       "Baja flexionando codos cerca del cuerpo.",
-      "Empuja hasta volver a la posiciÃ³n inicial.",
+      "Empuja hasta volver a la posición inicial.",
     ],
   },
   {
@@ -190,7 +190,7 @@ const EXERCISES = [
     description: "Fuerza real del tren superior.",
     howTo: [
       "Cuelga con agarre firme y hombros activos.",
-      "Inicia el tirÃ³n desde la espalda, no solo con brazos.",
+      "Inicia el tirón desde la espalda, no solo con brazos.",
       "Lleva el pecho hacia la barra.",
       "Baja controlando sin balancearte.",
     ],
@@ -207,7 +207,7 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Paso previo para L-sit.",
     howTo: [
-      "Cuelga de una barra o apÃ³yate en paralelas.",
+      "Cuelga de una barra o apóyate en paralelas.",
       "Sube las rodillas hacia el pecho.",
       "Evita impulsarte con balanceo.",
       "Baja despacio manteniendo el abdomen activo.",
@@ -227,7 +227,7 @@ const EXERCISES = [
     howTo: [
       "Da un paso largo hacia delante.",
       "Baja ambas rodillas controladamente.",
-      "MantÃ©n torso erguido y abdomen firme.",
+      "Mantén torso erguido y abdomen firme.",
       "Empuja con la pierna delantera para volver.",
     ],
   },
@@ -243,10 +243,10 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Progresion intermedia de compresion.",
     howTo: [
-      "ApÃ³yate en paralelas o bloques.",
+      "Apóyate en paralelas o bloques.",
       "Eleva el cuerpo con hombros deprimidos.",
       "Lleva rodillas al pecho manteniendo pies fuera del suelo.",
-      "SostÃ©n sin redondear demasiado la espalda.",
+      "Sostén sin redondear demasiado la espalda.",
     ],
   },
   {
@@ -264,7 +264,7 @@ const EXERCISES = [
       "Apoya los pies en una superficie elevada.",
       "Coloca las manos firmes en el suelo.",
       "Baja controlando el pecho hacia el suelo.",
-      "Empuja sin perder alineaciÃ³n corporal.",
+      "Empuja sin perder alineación corporal.",
     ],
   },
   {
@@ -281,7 +281,7 @@ const EXERCISES = [
     howTo: [
       "Coloca cadera alta formando una V invertida.",
       "Baja la cabeza entre las manos.",
-      "MantÃ©n codos orientados hacia atrÃ¡s.",
+      "Mantén codos orientados hacia atrás.",
       "Empuja hacia arriba llevando carga a hombros.",
     ],
   },
@@ -297,7 +297,7 @@ const EXERCISES = [
     mode: "calistenia",
     description: "Fuerza, equilibrio y movilidad.",
     howTo: [
-      "SujÃ©tate a un apoyo ligero.",
+      "Sujétate a un apoyo ligero.",
       "Extiende una pierna al frente.",
       "Baja sobre la pierna de apoyo sin perder equilibrio.",
       "Sube empujando fuerte con el pie apoyado.",
@@ -317,8 +317,8 @@ const EXERCISES = [
     howTo: [
       "Empuja fuerte contra las paralelas.",
       "Eleva ambas piernas rectas al frente.",
-      "MantÃ©n rodillas extendidas y abdomen firme.",
-      "SostÃ©n sin dejar caer la cadera.",
+      "Mantén rodillas extendidas y abdomen firme.",
+      "Sostén sin dejar caer la cadera.",
     ],
   },
   {
@@ -334,8 +334,8 @@ const EXERCISES = [
     description: "Muy utiles para progresion a muscle-up.",
     howTo: [
       "Inicia desde colgado estable.",
-      "Tira con mÃ¡xima velocidad y potencia.",
-      "Busca que el pecho suba lo mÃ¡s alto posible.",
+      "Tira con máxima velocidad y potencia.",
+      "Busca que el pecho suba lo más alto posible.",
       "Baja con control para repetir limpio.",
     ],
   },
@@ -354,7 +354,7 @@ const EXERCISES = [
       "Apoya hombros en banco y sujeta un punto firme.",
       "Eleva el cuerpo en bloque.",
       "Desciende lentamente sin doblarte por la cadera.",
-      "Vuelve arriba manteniendo tensiÃ³n abdominal.",
+      "Vuelve arriba manteniendo tensión abdominal.",
     ],
   },
   {
@@ -370,7 +370,7 @@ const EXERCISES = [
     description: "Ejercicio militar clasico de resistencia y potencia.",
     howTo: [
       "Desde pie, baja las manos al suelo.",
-      "Lleva los pies atrÃ¡s a posiciÃ³n de plancha.",
+      "Lleva los pies atrás a posición de plancha.",
       "Vuelve con los pies hacia delante.",
       "Salta extendiendo el cuerpo arriba.",
     ],
@@ -388,9 +388,9 @@ const EXERCISES = [
     description: "Muy usadas en entrenamiento militar para fuerza de triceps.",
     howTo: [
       "Junta las manos formando un diamante.",
-      "MantÃ©n codos cerca del cuerpo.",
+      "Mantén codos cerca del cuerpo.",
       "Baja controlando el pecho hacia las manos.",
-      "Empuja fuerte hasta extensiÃ³n completa.",
+      "Empuja fuerte hasta extensión completa.",
     ],
   },
   {
@@ -405,10 +405,10 @@ const EXERCISES = [
     mode: "militar",
     description: "Trabajo cardiovascular tipo militar.",
     howTo: [
-      "Corre en el mismo sitio a mÃ¡xima intensidad.",
+      "Corre en el mismo sitio a máxima intensidad.",
       "Eleva rodillas de forma activa.",
-      "Mueve brazos con ritmo rÃ¡pido.",
-      "MantÃ©n el tronco estable y respiraciÃ³n viva.",
+      "Mueve brazos con ritmo rápido.",
+      "Mantén el tronco estable y respiración viva.",
     ],
   },
   {
@@ -423,9 +423,9 @@ const EXERCISES = [
     mode: "militar",
     description: "Alta intensidad usada en entrenamiento funcional militar.",
     howTo: [
-      "ColÃ³cate en plancha alta.",
-      "Lleva una rodilla al pecho y alterna rÃ¡pido.",
-      "MantÃ©n hombros sobre las manos.",
+      "Colócate en plancha alta.",
+      "Lleva una rodilla al pecho y alterna rápido.",
+      "Mantén hombros sobre las manos.",
       "Evita mover demasiado la cadera.",
     ],
   },
@@ -442,7 +442,7 @@ const EXERCISES = [
     description: "Trabajo explosivo tipo entrenamiento de combate.",
     howTo: [
       "Parte de pie con rodillas ligeramente flexionadas.",
-      "Salta lo mÃ¡s vertical posible.",
+      "Salta lo más vertical posible.",
       "Lleva rodillas hacia el pecho en el aire.",
       "Aterriza suave y repite con control.",
     ],
@@ -459,9 +459,9 @@ const EXERCISES = [
     mode: "militar",
     description: "Simula desplazamientos militares en el suelo.",
     howTo: [
-      "Adopta posiciÃ³n de plancha baja.",
-      "DesplÃ¡zate lateral o frontal manteniendo tensiÃ³n.",
-      "MantÃ©n abdomen fuerte y cadera estable.",
+      "Adopta posición de plancha baja.",
+      "Desplázate lateral o frontal manteniendo tensión.",
+      "Mantén abdomen fuerte y cadera estable.",
       "Respira sin perder la postura.",
     ],
   },
