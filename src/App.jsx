@@ -1052,8 +1052,7 @@ gainedXP += difficultyBonus;
                     <div style={{ flex: 1, paddingRight: 8 }}>
                       <div style={styles.cardTitle}>{exercise.name}</div>
                       <div style={styles.cardHint}>{exercise.description}</div>
-                      <div style={styles.difficultyTag}>
-                      </div>
+                      <div style={styles.difficultyTag}>{getDifficultyTag(exercise.level, state.userStats.level)}</div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: "#f59e0b", marginTop: 4 }}>
                       </div>
                     </div>
@@ -1296,6 +1295,7 @@ const styles = {
   tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
   tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
 };
+
 
 
 
