@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "calistrack_v9";
+const STORAGE_KEY = "calistrack_v10";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
 const LEVELS = ["Basico", "Medio", "Experto"];
 
@@ -471,9 +471,9 @@ const WEEK_DAYS = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
 
 const PLANS = {
   basico: {
-    name: "Plan basico",
-    goal: "Crear base de fuerza y tecnica",
-    frequency: "3 dias por semana",
+    name: "Plan básico",
+    goal: "Crear base de fuerza y técnica",
+    frequency: "3 días por semana",
     sessions: [
       { name: "Flexiones inclinadas", prescription: "3 x 12", rest: 60 },
       { name: "Remo australiano", prescription: "4 x 8", rest: 75 },
@@ -484,7 +484,7 @@ const PLANS = {
   medio: {
     name: "Plan medio",
     goal: "Subir fuerza y control corporal",
-    frequency: "4 dias por semana",
+    frequency: "4 días por semana",
     sessions: [
       { name: "Flexiones clasicas", prescription: "4 x 10", rest: 75 },
       { name: "Fondos en paralelas", prescription: "4 x 8", rest: 90 },
@@ -495,7 +495,7 @@ const PLANS = {
   experto: {
     name: "Plan experto",
     goal: "Desarrollar fuerza avanzada y progresiones complejas",
-    frequency: "5 dias por semana",
+    frequency: "5 días por semana",
     sessions: [
       { name: "Pike push-ups", prescription: "5 x 8", rest: 90 },
       { name: "Dominadas explosivas", prescription: "5 x 4", rest: 120 },
@@ -556,6 +556,7 @@ const DEFAULT_STATE = {
   workoutLog: buildWorkoutLog("basico"),
   history: [],
   userStats: {
+    isPro: false,
     streak: 2,
     workouts: 6,
     progress: 35,
@@ -575,7 +576,8 @@ function loadState() {
     return {
       ...DEFAULT_STATE,
       ...parsed,
-      userStats: { ...DEFAULT_STATE.userStats, ...(parsed.userStats || {}) },
+      userStats: {
+    isPro: false, ...DEFAULT_STATE.userStats, ...(parsed.userStats || {}) },
       completedDays: Array.isArray(parsed.completedDays) ? parsed.completedDays.slice(0, 7) : DEFAULT_STATE.completedDays,
       workoutLog: Array.isArray(parsed.workoutLog) && parsed.workoutLog.length ? parsed.workoutLog : DEFAULT_STATE.workoutLog,
       history: Array.isArray(parsed.history) ? parsed.history : DEFAULT_STATE.history,
@@ -607,7 +609,7 @@ function filterExercises(list, search, levelFilter, categoryFilter, modeFilter) 
 }
 
 function runTests() {
-  console.assert(buildWorkoutLog("basico").length === 4, "El plan basico debe tener 4 ejercicios");
+  console.assert(buildWorkoutLog("basico").length === 4, "El Plan básico debe tener 4 ejercicios");
   console.assert(calculateAdherence([{ done: true }, { done: false }, { done: true }, { done: true }]) === 75, "La adherencia debe ser 75");
   console.assert(filterExercises(EXERCISES, "dominadas", "todos", "todas", "mixto").length >= 3, "Debe encontrar ejercicios de dominadas");
   console.assert(filterExercises(EXERCISES, "", "todos", "todas", "militar").every((item) => item.mode === "militar"), "Debe filtrar por modo");
@@ -682,7 +684,8 @@ export default function App() {
   function updateUser(field, value) {
     setState((prev) => ({
       ...prev,
-      userStats: { ...prev.userStats, [field]: value },
+      userStats: {
+    isPro: false, ...prev.userStats, [field]: value },
     }));
   }
 
@@ -699,6 +702,7 @@ export default function App() {
       selectedPlan: planKey,
       workoutLog: buildWorkoutLog(planKey),
       userStats: {
+    isPro: false,
         ...prev.userStats,
         level: planKey === "basico" ? "Basico" : planKey === "medio" ? "Medio" : "Experto",
         progress: planKey === "basico" ? 35 : planKey === "medio" ? 68 : 82,
@@ -712,6 +716,7 @@ export default function App() {
       activeTab: "inicio",
       workoutLog: buildAutoWorkout(prev.modeFilter, prev.userStats.level),
       userStats: {
+    isPro: false,
         ...prev.userStats,
         progress: Math.min(100, prev.userStats.progress + 3),
       },
@@ -721,10 +726,15 @@ export default function App() {
   }
 
   function generateAutomaticRoutine() {
+    if (!state.userStats.isPro) {
+      alert("Funcion PRO. Desbloquea para usar rutinas automaticas ilimitadas.");
+      return;
+    }
     setState((prev) => ({
       ...prev,
       workoutLog: buildAutoWorkout(prev.modeFilter, prev.userStats.level),
       userStats: {
+    isPro: false,
         ...prev.userStats,
         progress: Math.min(100, prev.userStats.progress + 5),
       },
@@ -739,6 +749,7 @@ export default function App() {
         ...prev,
         workoutLog,
         userStats: {
+    isPro: false,
           ...prev.userStats,
           workouts: prev.userStats.workouts + 1,
           progress: Math.min(100, 20 + doneCount * 15),
@@ -765,6 +776,7 @@ export default function App() {
         ...prev,
         completedDays,
         userStats: {
+    isPro: false,
           ...prev.userStats,
           streak: nextValue ? prev.userStats.streak + 1 : Math.max(0, prev.userStats.streak - 1),
         },
@@ -787,7 +799,10 @@ export default function App() {
 
       return {
         ...prev,
-        history: [newEntry, ...(prev.history || [])].slice(0, 20),
+        history: [
+          newEntry,
+          ...(prev.userStats.isPro ? (prev.history || []) : (prev.history || []).slice(0, 2)),
+        ].slice(0, 20),
       };
     });
   }
@@ -814,8 +829,12 @@ export default function App() {
       return {
         ...prev,
         workoutLog: prev.workoutLog.map((item) => ({ ...item, done: false })),
-        history: [newEntry, ...(prev.history || [])].slice(0, 20),
+        history: [
+          newEntry,
+          ...(prev.userStats.isPro ? (prev.history || []) : (prev.history || []).slice(0, 2)),
+        ].slice(0, 20),
         userStats: {
+    isPro: false,
           ...prev.userStats,
           workouts: prev.userStats.workouts + 1,
           xp: nextXP,
@@ -829,10 +848,21 @@ export default function App() {
     setActiveRestId(null);
   }
 
+  function togglePro() {
+    setState((prev) => ({
+      ...prev,
+      userStats: {
+        ...prev.userStats,
+        isPro: !prev.userStats.isPro,
+      },
+    }));
+  }
+
   function toggleAutoLevel() {
     setState((prev) => ({
       ...prev,
       userStats: {
+    isPro: false,
         ...prev.userStats,
         autoLevel: !prev.userStats.autoLevel,
       },
@@ -859,13 +889,13 @@ export default function App() {
         <div style={{ ...styles.header, ...themeStyles.header }}>
           <div>
             <div style={{ ...styles.brand, ...themeStyles.textStrong }}>CalisTrack</div>
-            <div style={{ ...styles.subtitle, ...themeStyles.textMuted }}>App de calistenia y militar con guardado local.</div>
+            <div style={{ ...styles.subtitle, ...themeStyles.textMuted }}>Entrenador personal de calistenia y preparación militar.</div>
           </div>
           <div style={styles.headerButtons}>
             <button type="button" onClick={toggleTheme} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>
               {isDark ? "Modo blanco" : "Modo negro"}
             </button>
-            <button type="button" onClick={resetApp} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>Reset</button>
+            <button type="button" onClick={resetApp} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>Reiniciar</button>
           </div>
         </div>
 
@@ -896,7 +926,7 @@ export default function App() {
           {state.activeTab === "inicio" && (
             <>
               <div style={styles.statsGrid}>
-                <StatCard label="Racha" value={`${state.userStats.streak} dias`} />
+                <StatCard label="Racha" value={`${state.userStats.streak} días`} />
                 <StatCard label="Entrenos" value={state.userStats.workouts} />
                 <StatCard label="Progreso" value={`${state.userStats.progress}%`} />
                 <StatCard label="XP" value={state.userStats.xp || 0} />
@@ -921,7 +951,7 @@ export default function App() {
                     <div style={styles.cardTitle}>Entrenamiento de hoy{state.userStats.name ? `, ${state.userStats.name}` : ""}</div>
                     <div style={styles.cardHint}>{currentPlan.name} - {currentPlan.frequency}</div>
                   </div>
-                  <button type="button" onClick={generateAutomaticRoutine} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>Generar rutina</button>
+                  
                 </div>
                 <div style={styles.stackMd}>
                   {state.workoutLog.map((item) => (
@@ -929,7 +959,7 @@ export default function App() {
                       <div style={{ flex: 1 }}>
                         <div style={styles.rowTitle}>{item.name}</div>
                         <div style={styles.rowHint}>{item.prescription}</div>
-                        <div style={styles.rowHint}>Descanso: {item.rest || 60}s</div>
+                        <div style={styles.rowHint}>Descanso: {item.Descanso || 60}s</div>
                       </div>
                       <div style={styles.buttonColumn}>
                         <button type="button" onClick={() => toggleWorkout(item.id)} style={{ ...styles.actionButton, ...themeStyles.actionButton, ...(item.done ? styles.actionButtonDone : {}) }}>
@@ -937,14 +967,14 @@ export default function App() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => startRest(item.rest || 60, item.id)}
+                          onClick={() => startRest(item.Descanso || 60, item.id)}
                           style={{
                             ...styles.restButton,
                             ...themeStyles.restButton,
                             ...(activeRestId === item.id && restTimer > 0 ? styles.restButtonActive : {}),
                           }}
                         >
-                          {activeRestId === item.id && restTimer > 0 ? `Rest ${restTimer}s` : "Start Rest"}
+                          {activeRestId === item.id && restTimer > 0 ? `Descanso ${restTimer}s` : "Empezar descanso"}
                         </button>
                       </div>
                     </div>
@@ -961,7 +991,7 @@ export default function App() {
               </div>
 
               <div style={{ ...styles.card, ...themeStyles.card }}>
-                <div style={styles.cardTitle}>Resumen</div>
+                <div style={styles.cardTitle}>Tu progreso</div>
                 <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
                 <div style={styles.paragraph}>Nivel actual: {state.userStats.level}</div>
                 <div style={styles.paragraph}>XP acumulado: {state.userStats.xp || 0}</div>
@@ -1104,6 +1134,16 @@ export default function App() {
                 {state.userStats.autoLevel ? "Desactivar nivel automÃ¡tico" : "Activar nivel automÃ¡tico"}
               </button>
               <div style={styles.paragraph}>Arquitectura: React + Vite + localStorage.</div>
+
+              <button type="button" onClick={togglePro} style={{ ...styles.primaryButton }}>
+                {state.userStats.isPro ? "Quitar PRO" : "Desbloquear PRO"}
+              </button>
+
+              {!state.userStats.isPro && (
+                <div style={styles.lockedBox}>
+                  Version gratuita activa. PRO desbloquea automatizacion completa.
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1179,7 +1219,7 @@ const styles = {
   primaryButton: { border: "1px solid #0f172a", background: "#0f172a", color: "#ffffff", borderRadius: 14, padding: "12px 14px", fontWeight: 700, cursor: "pointer" },
   headerButtons: { display: "grid", gap: 8 },
   finishGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 },
-  heroButton: { border: "none", borderRadius: 22, padding: "18px 16px", fontSize: 18, fontWeight: 900, cursor: "pointer" },
+  heroButton: { border: "none", borderRadius: 24, padding: "20px 16px", fontSize: 20, fontWeight: 900, cursor: "pointer", boxShadow: "0 14px 30px rgba(15,23,42,0.18)" },
   xpBox: { display: "grid", gap: 8, marginTop: 8 },
   xpTopLine: { display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, fontWeight: 700 },
   xpTrack: { height: 12, background: "#e2e8f0", borderRadius: 999, overflow: "hidden" },
@@ -1236,5 +1276,7 @@ const styles = {
   tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
   tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
 };
+
+
 
 
