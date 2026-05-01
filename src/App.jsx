@@ -2,6 +2,7 @@
 
 const STORAGE_KEY = "calistrack_v10";
 const TRAINING_MODES = ["calistenia", "militar", "mixto"];
+const GOALS = ["full body", "fuerza", "resistencia militar", "dominadas", "core", "pierna"];
 const LEVELS = ["Básico", "Medio", "Experto"];
 
 function calculateUserLevel(xp) {
@@ -552,6 +553,7 @@ const DEFAULT_STATE = {
   levelFilter: "todos",
   categoryFilter: "todas",
   modeFilter: "mixto",
+  goalFilter: "full body",
   completedDays: [true, false, false, true, false, false, false],
   workoutLog: buildWorkoutLog("Básico"),
   history: [],
@@ -931,8 +933,29 @@ gainedXP += difficultyBonus;
           </div>
           <div style={styles.profileField}>
             <label htmlFor="mode-filter" style={styles.fieldLabel}>Modo de entrenamiento</label>
-            <select id="mode-filter" value={state.modeFilter} onChange={(e) => updateField("modeFilter", e.target.value)} style={{ ...styles.input, ...themeStyles.input }}>
-              {TRAINING_MODES.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
+            <select
+              id="mode-filter"
+              value={state.modeFilter}
+              onChange={(e) => updateField("modeFilter", e.target.value)}
+              style={{ ...styles.input, ...themeStyles.input }}
+            >
+              {TRAINING_MODES.map((mode) => (
+                <option key={mode} value={mode}>{mode}</option>
+              ))}
+            </select>
+          </div>
+
+          <div style={styles.profileField}>
+            <label htmlFor="goal-filter" style={styles.fieldLabel}>Objetivo principal</label>
+            <select
+              id="goal-filter"
+              value={state.goalFilter}
+              onChange={(e) => updateField("goalFilter", e.target.value)}
+              style={{ ...styles.input, ...themeStyles.input }}
+            >
+              {GOALS.map((goal) => (
+                <option key={goal} value={goal}>{goal}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -1024,6 +1047,7 @@ gainedXP += difficultyBonus;
                 </div>
                 <div style={styles.paragraph}>Nivel automático: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
                 <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
+                <div style={styles.paragraph}>Objetivo de rutina: {state.goalFilter}</div>
                 <div style={styles.paragraph}>Adherencia actual: {adherence}%</div>
               </div>
             </>
@@ -1146,6 +1170,7 @@ gainedXP += difficultyBonus;
               <div style={styles.paragraph}>Objetivo: {state.userStats.objective}</div>
               <div style={styles.paragraph}>Nivel: {state.userStats.level}</div>
               <div style={styles.paragraph}>Modo: {state.modeFilter}</div>
+                <div style={styles.paragraph}>Objetivo de rutina: {state.goalFilter}</div>
               <div style={styles.paragraph}>XP: {state.userStats.xp || 0}</div>
               <div style={styles.paragraph}>Nivel automático: {state.userStats.autoLevel ? "Activado" : "Desactivado"}</div>
               <button type="button" onClick={toggleAutoLevel} style={{ ...styles.secondaryButton, ...themeStyles.secondaryButton }}>
@@ -1295,6 +1320,7 @@ const styles = {
   tabItem: { border: "none", background: "transparent", padding: "10px 4px", color: "#64748b", fontWeight: 600, fontSize: 12, borderRadius: 16, cursor: "pointer" },
   tabItemActive: { color: "#0f172a", background: "#f1f5f9", fontWeight: 800 },
 };
+
 
 
 
